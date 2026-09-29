@@ -1,0 +1,1516 @@
+{
+  "name": "Abdullah Mustafa(Linkedin Post Automations with AI Image)",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ",
+          "mode": "list",
+          "cachedResultName": "content_calendar_500_topics_mixed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 401916165,
+          "mode": "list",
+          "cachedResultName": "Content Calendar",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit#gid=401916165"
+        },
+        "options": {}
+      },
+      "id": "b93507d1-47f8-4856-aba1-c7a9c0ccf70a",
+      "name": "Read Topics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -768,
+        768
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0D8cwybOFGM6f9RW",
+          "name": "Google Sheets account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json);\n\nconst available = rows.filter(r => {\n  const status = (r.Status || '').toString().trim().toLowerCase();\n  const topic = (r.Topic || r.Title || '').toString().trim();\n  return topic !== '' && status !== 'published';\n});\n\nconst selected = available.slice(0, 3);\nconst topicOf = (r) => (r ? (r.Topic || r.Title || '') : '');\n\nconst monday = $now.set({ hour: 10, minute: 0, second: 0, millisecond: 0 });\nconst wednesday = $now.plus({ days: 2 }).set({ hour: 15, minute: 0, second: 0, millisecond: 0 });\nconst friday = $now.plus({ days: 4 }).set({ hour: 15, minute: 0, second: 0, millisecond: 0 });\n\nreturn [{\n  json: {\n    count: selected.length,\n    missingCount: 3 - selected.length,\n    hasTopic1: selected.length >= 1,\n    hasTopic2: selected.length >= 2,\n    hasTopic3: selected.length >= 3,\n    topic1: topicOf(selected[0]),\n    row1: selected[0] ? selected[0].row_number : null,\n    slot1: 'Monday 10:00 AM',\n    scheduled1: monday.toISO(),\n    topic2: topicOf(selected[1]),\n    row2: selected[1] ? selected[1].row_number : null,\n    slot2: 'Wednesday 3:00 PM',\n    scheduled2: wednesday.toISO(),\n    topic3: topicOf(selected[2]),\n    row3: selected[2] ? selected[2].row_number : null,\n    slot3: 'Friday 3:00 PM',\n    scheduled3: friday.toISO(),\n  },\n}];"
+      },
+      "id": "2cffd8b7-1763-414f-8a47-9dfdd9a2fd89",
+      "name": "Prepare Topics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -544,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.hasTopic1 }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "488a4ff8-eafe-41b3-bdf8-e6d55669dd82",
+      "name": "Has Topic 1?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -320,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "2026-08-04T01:26:00"
+      },
+      "id": "2bab421a-dc47-4397-b62e-0959d5d6250e",
+      "name": "Wait until Mon 10AM",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        176
+      ],
+      "webhookId": "f73d1e0e-6980-450a-b06a-376370f590d2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write one complete, ready-to-publish LinkedIn post on this topic. Include all five required elements (hook, valuable content, one CTA, 3-5 hashtags on the last line, and line-break formatting), and make it read like a real human wrote it.\n\nTopic/Title: {{ $json.topic1 }}",
+        "options": {
+          "systemMessage": "1. IDENTITY & OPERATIONAL PROFILE\nYou operate as a world-class LinkedIn Content Strategist, Executive Ghostwriter, and Personal Branding Director. Your primary mandate is to convert complex industry insights, leadership philosophies, or raw topics into highly engaging, publication-ready LinkedIn posts that read naturally—as if written by a seasoned executive, founder, or practitioner. The generated output must display a absolute Zero AI Footprint, eliminating robotic phrasing, meta-talk, or artificial structures.\n\n2. STRUCTURAL ANATOMY (MANDATORY 5-STAGE SEQUENCING)\nEvery generated post must strictly adhere to the following sequence:\n\nTHE SCROLL-STOPPING HOOK (Lines 1–2):\n\nStrict limit: Under 140 characters.\n\nPurpose: Maximize feed retention before the \"see more\" fold.\n\nFramework Options: Counter-intuitive industry truth, painful structural mistake, stark paradox, or high-stakes diagnostic question.\n\nHIGH-VALUE BODY (Core Narrative & Framework):\n\nFocus: Deliver exactly ONE key insight, framework, or actionable perspective with exceptional depth.\n\nRhythm & Spacing: Paragraphs limited to 1–3 short sentences for effortless mobile scrolling.\n\nStructural Breakouts: Use bullet points (• or →) or numbered lists to distill actionable steps or comparisons.\n\nCORE TAKEAWAY (The Anchor):\n\nExactly 1 standalone, high-impact summary statement capturing the primary lesson.\n\nFormatting: Enclose in double asterisks for bold emphasis.\n\nCALL TO ACTION / ENGAGEMENT ENGINE (CTA):\n\nExactly 1 low-friction, open-ended question designed to elicit nuanced responses and debate from senior peers in the comment section.\n\nTAG ARCHITECTURE (Final Line):\n\nExactly 5 to 7 highly targeted, low-to-mid-density industry hashtags on the very last line of the post (e.g., #Leadership #B2BSales #ProductStrategy).\n\n3. HUMANIZATION & NEUROLINGUISTIC PATTERNS\nTo guarantee an authentic human signature, apply these execution rules:\n\nDynamic Sentence Cadence: Alternate between short, punchy statements (3–6 words) and contextual, compound sentences to simulate human thought flow.\n\nPerspective Anchoring: Write using authoritative first-person (\"I\", \"my team\", \"we\") or direct second-person (\"you\", \"your organization\").\n\nGeneralization Over Fabrication: Never invent fake client stats, arbitrary names, or unverified personal anecdotes (e.g., avoid \"Last week my client Sarah...\"). Frame experience through realistic industry patterns (e.g., \"Across dozens of enterprise deployments, a recurring failure mode appears...\").\n\nControlled Formatting & Visual Hierarchy:\n\nBolding: Limit bold text to 2 to 4 key terms or the main takeaway per post.\n\nEmojis: Use 3 to 5 naturally integrated emojis as functional visual anchors—never as decorative clutter.\n\n4. NEGATIVE CONSTRAINT MATRIX (STRICT BANS)\n+------------------------------------+---------------------------------------------------+\n| BANNED VOCABULARY                  | BANNED AI PHRASING & STRUCTURAL PATTERNS           |\n+------------------------------------+---------------------------------------------------+\n| delve, spearhead, tapestry,        | \"In conclusion,\" / \"To summarize,\"                |\n| testament, game-changer, landscape,| \"In today's fast-paced/dynamic world,\"            |\n| unravel, embark, synergy, paradigm,| \"Humbled and honored to announce...\"              |\n| cutting-edge, leverage, unleash,   | Meta-introductions (\"Here is a post about...\")    |\n| foster, resonate, navigate, beacon | Markdown code fences wrapping the post (```)      |\n| supercharge, transformational      | Word count trackers, post-analysis, or intros     |\n+------------------------------------+---------------------------------------------------+\n5. TECHNICAL CONSTRAINTS & OUTPUT FORMAT\nTarget Word Count: Strictly between 180 and 320 words.\n\nRaw Output Directive: Return ONLY the final, ready-to-publish post text. Do not include markdown code blocks, titles, labels like \"LinkedIn Post:\", or post-generation notes."
+        }
+      },
+      "id": "7e4d4a45-9037-4070-a5bb-b37943d21eaf",
+      "name": "Generate Post 1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        128,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = $('Generate Post 1').first().json.output || '';\n\nfunction toBold(str) {\n  let out = '';\n  for (const ch of str) {\n    const code = ch.codePointAt(0);\n    if (ch >= 'A' && ch <= 'Z') {\n      out += String.fromCodePoint(0x1D400 + (code - 65));\n    } else if (ch >= 'a' && ch <= 'z') {\n      out += String.fromCodePoint(0x1D41A + (code - 97));\n    } else if (ch >= '0' && ch <= '9') {\n      out += String.fromCodePoint(0x1D7CE + (code - 48));\n    } else {\n      out += ch;\n    }\n  }\n  return out;\n}\n\ntext = text.replace(/\\*\\*(.+?)\\*\\*/gs, (m, inner) => toBold(inner));\ntext = text.replace(/__(.+?)__/gs, (m, inner) => toBold(inner));\ntext = text.replace(/^\\s{0,3}#{1,6}\\s+/gm, '');\ntext = text.replace(/\\*+/g, '');\ntext = text.replace(/\\n{3,}/g, '\\n\\n').trim();\n\nreturn [{ json: { postText: text } }];"
+      },
+      "id": "0b623afb-f49c-4cc4-b8fb-23e3b9612c2d",
+      "name": "Format Post 1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "person": "=kkeQ9hSCxp",
+        "text": "={{ $('Format Post 1').first().json.postText }}",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {
+          "visibility": "PUBLIC"
+        }
+      },
+      "id": "3185be75-378c-4035-bbdd-3722819f05db",
+      "name": "Publish Post 1",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        176
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "gizrqWMis3a1hKXM",
+          "name": "LinkedIn account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ",
+          "mode": "list",
+          "cachedResultName": "content_calendar_500_topics_mixed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 401916165,
+          "mode": "list",
+          "cachedResultName": "Content Calendar",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit#gid=401916165"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Prepare Topics').item.json.row1 }}",
+            "Status": "Published"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Slot",
+              "displayName": "Slot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "GeneratedPost",
+              "displayName": "GeneratedPost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ScheduledFor",
+              "displayName": "ScheduledFor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PublishedAt",
+              "displayName": "PublishedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LinkedInPostId",
+              "displayName": "LinkedInPostId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "urn",
+              "displayName": "urn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "0c86aecb-189b-488b-a027-adc0fd120f98",
+      "name": "Mark Topic 1 Published",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1520,
+        176
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0D8cwybOFGM6f9RW",
+          "name": "Google Sheets account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.hasTopic2 }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9933b0f2-b55e-4d35-9edf-2002412b714c",
+      "name": "Has Topic 2?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -320,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ $now.plus({ days: 2 }).set({ hour: 15, minute: 0, second: 0, millisecond: 0 }).toISO() }}"
+      },
+      "id": "5aa38ec6-0268-428e-bf03-8f3731623399",
+      "name": "Wait until Wed 3PM",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        576
+      ],
+      "webhookId": "6376d7b4-a379-4738-9a37-ca6a8ed782f4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write one complete, ready-to-publish LinkedIn post on this topic. Include all five required elements (hook, valuable content, one CTA, 3-5 hashtags on the last line, and line-break formatting), and make it read like a real human wrote it.\n\nTopic/Title: {{ $json.topic2 }}",
+        "options": {
+          "systemMessage": "You are a world-class LinkedIn Content Strategist, Senior Copywriter, Personal Branding Expert, and Industry Thought Leader with over 15 years of experience creating viral, high-converting LinkedIn content for founders, CEOs, software engineers, AI professionals, startup founders, product managers, marketers, and business leaders.\n\nYour primary objective is to generate LinkedIn posts that sound as if they were written naturally by a knowledgeable professional—not by AI. Every post should feel authentic, insightful, conversational, and valuable.\n\n---\n\n# Primary Goal\n\nWhenever you receive a topic or title, create a complete LinkedIn post that is:\n\n- 100% original\n- Natural and human-like\n- Professional yet conversational\n- Educational and actionable\n- Easy to read\n- Highly engaging\n- Optimized for LinkedIn's readability and engagement\n- Ready to publish without any editing\n\nNever mention that the content was generated by AI.\n\n---\n\n# Writing Style\n\nWrite exactly like an experienced professional sharing real-world knowledge.\n\nThe writing should be:\n\n- Authentic\n- Warm\n- Conversational\n- Intelligent\n- Practical\n- Insightful\n- Confident\n- Helpful\n\nAvoid robotic wording.\n\nAvoid repetitive sentence structures.\n\nAvoid keyword stuffing.\n\nAvoid corporate jargon unless absolutely necessary.\n\nUse contractions naturally.\n\nMix short and medium-length sentences.\n\nOccasionally use one-line paragraphs for emphasis.\n\nMake the post flow naturally.\n\nNever sound scripted.\n\n---\n\n# Humanization Rules\n\nThe post MUST feel like it was written by a real person.\n\nInclude natural transitions, genuine opinions, practical advice, real-world thinking, and balanced viewpoints.\n\nNever fabricate personal stories, company experience, statistics, client results, or case studies unless explicitly provided. Instead use phrases like \"In many teams...\", \"One common mistake is...\", \"A practical approach is...\", \"Many professionals overlook...\".\n\n---\n\n# Structure\n\nEvery LinkedIn post MUST follow this structure.\n\n1. HOOK: Start with a powerful hook. The first two lines must immediately capture attention (question, surprising statement, common mistake, myth, bold opinion, pain point, trend, or lesson). Keep it under 2 lines.\n\n2. BODY: Explain one idea clearly with short paragraphs, logical flow, practical insights, and actionable advice. When useful include examples, tips, best practices, lessons learned, mistakes to avoid, or action steps. Deliver one main idea exceptionally well.\n\n3. TAKEAWAY: End with one memorable insight the reader can keep.\n\n4. CTA: End with a natural call-to-action. Rotate different CTA styles and avoid repeating the same one.\n\n5. HASHTAGS: Include 5-8 relevant hashtags (industry + niche + broad) on the final line. Avoid irrelevant trending hashtags.\n\n---\n\n# Emphasis / Bold Rule\n\nWhen you want to make a short key phrase bold, wrap it in **double asterisks** (for example: **start small**). These are automatically converted to real bold text before the post is published, so use them for emphasis on a few key phrases only (0-4 per post). Do not use headings (#), and do not use any other markdown.\n\n---\n\n# Formatting Rules\n\nUse plenty of white space. Maximum 2-3 sentences per paragraph. Separate ideas with blank lines. Use bullet points when useful. Do NOT create giant blocks of text.\n\n---\n\n# Emoji Rules\n\nUse emojis naturally to improve readability (about 3-8 total). Do not overuse them.\n\n---\n\n# Length\n\nTarget 180-350 words. Do not exceed 450 words unless explicitly requested.\n\n---\n\n# Tone\n\nProfessional, positive, helpful, educational, encouraging, authentic, credible, confident. Never arrogant.\n\n---\n\n# Output Rules\n\nReturn ONLY the LinkedIn post. Do NOT include titles like \"LinkedIn Post\", explanations, notes, analysis, metadata, word count, or markdown code fences. Output should be immediately ready to publish on LinkedIn.\n\n---\n\n# Final Objective\n\nEvery generated post should make readers think: \"This feels like it was written by a real professional sharing valuable experience.\" Prioritize authenticity, clarity, and value."
+        }
+      },
+      "id": "b87f067a-fc8d-4537-975d-1efbde377a33",
+      "name": "Generate Post 2",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        128,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = $('Generate Post 2').first().json.output || '';\n\nfunction toBold(str) {\n  let out = '';\n  for (const ch of str) {\n    const code = ch.codePointAt(0);\n    if (ch >= 'A' && ch <= 'Z') {\n      out += String.fromCodePoint(0x1D400 + (code - 65));\n    } else if (ch >= 'a' && ch <= 'z') {\n      out += String.fromCodePoint(0x1D41A + (code - 97));\n    } else if (ch >= '0' && ch <= '9') {\n      out += String.fromCodePoint(0x1D7CE + (code - 48));\n    } else {\n      out += ch;\n    }\n  }\n  return out;\n}\n\ntext = text.replace(/\\*\\*(.+?)\\*\\*/gs, (m, inner) => toBold(inner));\ntext = text.replace(/__(.+?)__/gs, (m, inner) => toBold(inner));\ntext = text.replace(/^\\s{0,3}#{1,6}\\s+/gm, '');\ntext = text.replace(/\\*+/g, '');\ntext = text.replace(/\\n{3,}/g, '\\n\\n').trim();\n\nreturn [{ json: { postText: text } }];"
+      },
+      "id": "751a4206-48e0-4b66-81fd-bbfb29f8ba42",
+      "name": "Format Post 2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "person": "kkeQ9hSCxp",
+        "text": "={{ $('Format Post 2').first().json.postText }}",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {
+          "visibility": "PUBLIC"
+        }
+      },
+      "id": "b8bbace2-5a45-4d3f-825f-680072ed4f7a",
+      "name": "Publish Post 2",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        576
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "gizrqWMis3a1hKXM",
+          "name": "LinkedIn account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ",
+          "mode": "list",
+          "cachedResultName": "content_calendar_500_topics_mixed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 401916165,
+          "mode": "list",
+          "cachedResultName": "Content Calendar",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit#gid=401916165"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic": "=",
+            "Status": "Published",
+            "row_number": "={{ $('Prepare Topics').item.json.row1 }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Slot",
+              "displayName": "Slot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "GeneratedPost",
+              "displayName": "GeneratedPost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ScheduledFor",
+              "displayName": "ScheduledFor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PublishedAt",
+              "displayName": "PublishedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "LinkedInPostId",
+              "displayName": "LinkedInPostId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "urn",
+              "displayName": "urn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "da831eed-35ca-4b44-9128-9f9f12e43b58",
+      "name": "Mark Topic 2 Published",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1536,
+        560
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0D8cwybOFGM6f9RW",
+          "name": "Google Sheets account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.hasTopic3 }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d528edb9-15c3-4c82-b158-a2dc4e55caa2",
+      "name": "Has Topic 3?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -320,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ $now.plus({ days: 4 }).set({ hour: 15, minute: 0, second: 0, millisecond: 0 }).toISO() }}"
+      },
+      "id": "0649776b-beaf-4fe8-a193-d5dc534da839",
+      "name": "Wait until Fri 3PM",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        976
+      ],
+      "webhookId": "91d63aa8-5259-46ef-ae32-80bccdb70488"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write one complete, ready-to-publish LinkedIn post on this topic. Include all five required elements (hook, valuable content, one CTA, 3-5 hashtags on the last line, and line-break formatting), and make it read like a real human wrote it.\n\nTopic/Title: {{ $json.topic3 }}",
+        "options": {
+          "systemMessage": "You are a world-class LinkedIn Content Strategist, Senior Copywriter, Personal Branding Expert, and Industry Thought Leader with over 15 years of experience creating viral, high-converting LinkedIn content for founders, CEOs, software engineers, AI professionals, startup founders, product managers, marketers, and business leaders.\n\nYour primary objective is to generate LinkedIn posts that sound as if they were written naturally by a knowledgeable professional—not by AI. Every post should feel authentic, insightful, conversational, and valuable.\n\n---\n\n# Primary Goal\n\nWhenever you receive a topic or title, create a complete LinkedIn post that is:\n\n- 100% original\n- Natural and human-like\n- Professional yet conversational\n- Educational and actionable\n- Easy to read\n- Highly engaging\n- Optimized for LinkedIn's readability and engagement\n- Ready to publish without any editing\n\nNever mention that the content was generated by AI.\n\n---\n\n# Writing Style\n\nWrite exactly like an experienced professional sharing real-world knowledge.\n\nThe writing should be:\n\n- Authentic\n- Warm\n- Conversational\n- Intelligent\n- Practical\n- Insightful\n- Confident\n- Helpful\n\nAvoid robotic wording.\n\nAvoid repetitive sentence structures.\n\nAvoid keyword stuffing.\n\nAvoid corporate jargon unless absolutely necessary.\n\nUse contractions naturally.\n\nMix short and medium-length sentences.\n\nOccasionally use one-line paragraphs for emphasis.\n\nMake the post flow naturally.\n\nNever sound scripted.\n\n---\n\n# Humanization Rules\n\nThe post MUST feel like it was written by a real person.\n\nInclude natural transitions, genuine opinions, practical advice, real-world thinking, and balanced viewpoints.\n\nNever fabricate personal stories, company experience, statistics, client results, or case studies unless explicitly provided. Instead use phrases like \"In many teams...\", \"One common mistake is...\", \"A practical approach is...\", \"Many professionals overlook...\".\n\n---\n\n# Structure\n\nEvery LinkedIn post MUST follow this structure.\n\n1. HOOK: Start with a powerful hook. The first two lines must immediately capture attention (question, surprising statement, common mistake, myth, bold opinion, pain point, trend, or lesson). Keep it under 2 lines.\n\n2. BODY: Explain one idea clearly with short paragraphs, logical flow, practical insights, and actionable advice. When useful include examples, tips, best practices, lessons learned, mistakes to avoid, or action steps. Deliver one main idea exceptionally well.\n\n3. TAKEAWAY: End with one memorable insight the reader can keep.\n\n4. CTA: End with a natural call-to-action. Rotate different CTA styles and avoid repeating the same one.\n\n5. HASHTAGS: Include 5-8 relevant hashtags (industry + niche + broad) on the final line. Avoid irrelevant trending hashtags.\n\n---\n\n# Emphasis / Bold Rule\n\nWhen you want to make a short key phrase bold, wrap it in **double asterisks** (for example: **start small**). These are automatically converted to real bold text before the post is published, so use them for emphasis on a few key phrases only (0-4 per post). Do not use headings (#), and do not use any other markdown.\n\n---\n\n# Formatting Rules\n\nUse plenty of white space. Maximum 2-3 sentences per paragraph. Separate ideas with blank lines. Use bullet points when useful. Do NOT create giant blocks of text.\n\n---\n\n# Emoji Rules\n\nUse emojis naturally to improve readability (about 3-8 total). Do not overuse them.\n\n---\n\n# Length\n\nTarget 180-350 words. Do not exceed 450 words unless explicitly requested.\n\n---\n\n# Tone\n\nProfessional, positive, helpful, educational, encouraging, authentic, credible, confident. Never arrogant.\n\n---\n\n# Output Rules\n\nReturn ONLY the LinkedIn post. Do NOT include titles like \"LinkedIn Post\", explanations, notes, analysis, metadata, word count, or markdown code fences. Output should be immediately ready to publish on LinkedIn.\n\n---\n\n# Final Objective\n\nEvery generated post should make readers think: \"This feels like it was written by a real professional sharing valuable experience.\" Prioritize authenticity, clarity, and value."
+        }
+      },
+      "id": "86218925-9fd7-428e-a9af-c31649a08add",
+      "name": "Generate Post 3",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        144,
+        992
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = $('Generate Post 3').first().json.output || '';\n\nfunction toBold(str) {\n  let out = '';\n  for (const ch of str) {\n    const code = ch.codePointAt(0);\n    if (ch >= 'A' && ch <= 'Z') {\n      out += String.fromCodePoint(0x1D400 + (code - 65));\n    } else if (ch >= 'a' && ch <= 'z') {\n      out += String.fromCodePoint(0x1D41A + (code - 97));\n    } else if (ch >= '0' && ch <= '9') {\n      out += String.fromCodePoint(0x1D7CE + (code - 48));\n    } else {\n      out += ch;\n    }\n  }\n  return out;\n}\n\ntext = text.replace(/\\*\\*(.+?)\\*\\*/gs, (m, inner) => toBold(inner));\ntext = text.replace(/__(.+?)__/gs, (m, inner) => toBold(inner));\ntext = text.replace(/^\\s{0,3}#{1,6}\\s+/gm, '');\ntext = text.replace(/\\*+/g, '');\ntext = text.replace(/\\n{3,}/g, '\\n\\n').trim();\n\nreturn [{ json: { postText: text } }];"
+      },
+      "id": "c7a77238-2115-4c46-b575-4de59656cb63",
+      "name": "Format Post 3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "person": "kkeQ9hSCxp",
+        "text": "={{ $('Format Post 3').first().json.postText }}",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {
+          "visibility": "PUBLIC"
+        }
+      },
+      "id": "9c096bb1-5d4c-4985-9377-6f52e7d9f6b7",
+      "name": "Publish Post 3",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        976
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "gizrqWMis3a1hKXM",
+          "name": "LinkedIn account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ",
+          "mode": "list",
+          "cachedResultName": "content_calendar_500_topics_mixed",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 401916165,
+          "mode": "list",
+          "cachedResultName": "Content Calendar",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit#gid=401916165"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Prepare Topics').item.json.row1 }}",
+            "Topic": "=",
+            "Status": "Published"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Slot",
+              "displayName": "Slot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "GeneratedPost",
+              "displayName": "GeneratedPost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ScheduledFor",
+              "displayName": "ScheduledFor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PublishedAt",
+              "displayName": "PublishedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "LinkedInPostId",
+              "displayName": "LinkedInPostId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "urn",
+              "displayName": "urn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "6cb04ea6-9f06-45e5-95e9-5a6944f32cfe",
+      "name": "Mark Topic 3 Published",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1600,
+        976
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0D8cwybOFGM6f9RW",
+          "name": "Google Sheets account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.count }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ac0ce7cc-87b3-4797-9a07-4b511ad9f2e5",
+      "name": "Fewer Than 3 Topics?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -320,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "mustafaabdullah22002@gmail.com",
+        "subject": "=⚠️ LinkedIn Content Automation: only {{ $json.count }} topic(s) available this week",
+        "emailType": "text",
+        "message": "=Heads up — this week only {{ $json.count }} unused topic(s) were available in your content calendar, so {{ $json.missingCount }} scheduled LinkedIn post(s) will be skipped.\n\nPlease add more topics (Status = \"Unused\") to the Google Sheet so all three weekly slots can be filled.",
+        "options": {}
+      },
+      "id": "b626be84-f3f9-4e64-a764-c2c496e3114f",
+      "name": "Notify Missing Topics",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        1168
+      ],
+      "webhookId": "e5a02834-d5ff-41dc-94fe-307a6c1864a2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "aZsuKgHEwX6m2BLi",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 8
+            },
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                3
+              ],
+              "triggerAtHour": 15
+            },
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                5
+              ],
+              "triggerAtHour": 15
+            }
+          ]
+        }
+      },
+      "id": "323e43d3-d548-431f-988c-95123f1cd59f",
+      "name": "shudelue",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -992,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "=models/gemini-3-flash-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        288
+      ],
+      "id": "4c255365-81e1-407a-98af-c969c015230d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "p6avHgVqa1b3fLFf",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        704
+      ],
+      "id": "414a551d-ee57-4dcf-ac2f-e22a00ae13c0",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zo9jUbD4BWqti8bx",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        1264
+      ],
+      "id": "6f699eb7-a346-47a8-bc06-b8fcd0b2a6b0",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zo9jUbD4BWqti8bx",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "wan2.7-image-pro",
+          "mode": "list",
+          "cachedResultName": "wan2.7-image-pro"
+        },
+        "prompt": "={{ $json.final_image_prompt }}",
+        "imageOptions": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.alibabaCloud",
+      "typeVersion": 1.1,
+      "position": [
+        1136,
+        176
+      ],
+      "id": "0f5acea4-d06d-46d4-be8d-623a238b33e9",
+      "name": "Generate an image1",
+      "credentials": {
+        "alibabaCloudApi": {
+          "id": "EyUJ14OD0MlJd27h",
+          "name": "Qwen Cloud account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.6-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.6-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert AI Prompt Engineer. Read the provided post content and create a highly relevant image generation prompt for Qwen Image Model that directly visualizes the core subject of the post.\n\n---\nPOST CONTENT:\n{{ $json.postText }}\n---\n\nSTRICT INSTRUCTIONS:\n1. Read POST CONTENT carefully. Extract the visual topic (e.g., CSS layout grids, design tokens, code structure).\n2. DO NOT output generic data pipelines, neural networks, or businessmen in suits unless asked.\n3. OUTPUT ONLY A CLEAN JSON OBJECT:\n{\n  \"qwen_image_prompt\": \"<Put detailed image prompt here>\"\n}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        688,
+        176
+      ],
+      "id": "3bda733d-4212-46d8-986a-a24b0097a147",
+      "name": "Message a model",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zo9jUbD4BWqti8bx",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input from previous node\nconst inputItem = $input.first().json;\nlet rawText = inputItem.text || inputItem.content || inputItem;\n\n// If it's a string, clean markdown and parse JSON\nif (typeof rawText === 'string') {\n  // Remove markdown wrapper if present\n  rawText = rawText.replace(/```json|```/g, '').trim();\n  try {\n    const parsed = JSON.parse(rawText);\n    rawText = parsed.qwen_image_prompt || parsed.text || rawText;\n  } catch (e) {\n    // Fallback if parsing fails\n  }\n} else if (typeof rawText === 'object') {\n  rawText = rawText.qwen_image_prompt || rawText.text || JSON.stringify(rawText);\n}\n\n// Return strictly the cleaned image prompt string\nreturn [{\n  json: {\n    final_image_prompt: rawText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        176
+      ],
+      "id": "c7112014-94c9-4e61-ae98-30e8462527b6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.6-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.6-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert AI Prompt Engineer. Read the provided post content and create a highly relevant image generation prompt for Qwen Image Model that directly visualizes the core subject of the post.\n\n---\nPOST CONTENT:\n{{ $json.postText }}\n---\n\nSTRICT INSTRUCTIONS:\n1. Read POST CONTENT carefully. Extract the visual topic (e.g., CSS layout grids, design tokens, code structure).\n2. DO NOT output generic data pipelines, neural networks, or businessmen in suits unless asked.\n3. OUTPUT ONLY A CLEAN JSON OBJECT:\n{\n  \"qwen_image_prompt\": \"<Put detailed image prompt here>\"\n}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        656,
+        576
+      ],
+      "id": "a89ea2ea-cc7e-4f4f-9b49-fd7daa88acd7",
+      "name": "Message a model1",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zo9jUbD4BWqti8bx",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.6-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.6-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an expert AI Prompt Engineer. Read the provided post content and create a highly relevant image generation prompt for Qwen Image Model that directly visualizes the core subject of the post.\n\n---\nPOST CONTENT:\n{{ $json.postText }}\n---\n\nSTRICT INSTRUCTIONS:\n1. Read POST CONTENT carefully. Extract the visual topic (e.g., CSS layout grids, design tokens, code structure).\n2. DO NOT output generic data pipelines, neural networks, or businessmen in suits unless asked.\n3. OUTPUT ONLY A CLEAN JSON OBJECT:\n{\n  \"qwen_image_prompt\": \"<Put detailed image prompt here>\"\n}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        976
+      ],
+      "id": "97ab9b8f-46da-454f-837b-e1ed608dfdd1",
+      "name": "Message a model2",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zo9jUbD4BWqti8bx",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input from previous node\nconst inputItem = $input.first().json;\nlet rawText = inputItem.text || inputItem.content || inputItem;\n\n// If it's a string, clean markdown and parse JSON\nif (typeof rawText === 'string') {\n  // Remove markdown wrapper if present\n  rawText = rawText.replace(/```json|```/g, '').trim();\n  try {\n    const parsed = JSON.parse(rawText);\n    rawText = parsed.qwen_image_prompt || parsed.text || rawText;\n  } catch (e) {\n    // Fallback if parsing fails\n  }\n} else if (typeof rawText === 'object') {\n  rawText = rawText.qwen_image_prompt || rawText.text || JSON.stringify(rawText);\n}\n\n// Return strictly the cleaned image prompt string\nreturn [{\n  json: {\n    final_image_prompt: rawText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        576
+      ],
+      "id": "a164d2a5-855c-4f55-ad92-78ebffd43249",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input from previous node\nconst inputItem = $input.first().json;\nlet rawText = inputItem.text || inputItem.content || inputItem;\n\n// If it's a string, clean markdown and parse JSON\nif (typeof rawText === 'string') {\n  // Remove markdown wrapper if present\n  rawText = rawText.replace(/```json|```/g, '').trim();\n  try {\n    const parsed = JSON.parse(rawText);\n    rawText = parsed.qwen_image_prompt || parsed.text || rawText;\n  } catch (e) {\n    // Fallback if parsing fails\n  }\n} else if (typeof rawText === 'object') {\n  rawText = rawText.qwen_image_prompt || rawText.text || JSON.stringify(rawText);\n}\n\n// Return strictly the cleaned image prompt string\nreturn [{\n  json: {\n    final_image_prompt: rawText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        976
+      ],
+      "id": "8d7cde03-2f20-4650-8e17-61da9195f0de",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "wan2.7-image-pro",
+          "mode": "list",
+          "cachedResultName": "wan2.7-image-pro"
+        },
+        "prompt": "={{ $json.final_image_prompt }}",
+        "imageOptions": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.alibabaCloud",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        576
+      ],
+      "id": "99fcd894-974f-4608-a0ea-0c0aaaaa0ef1",
+      "name": "Generate an image",
+      "credentials": {
+        "alibabaCloudApi": {
+          "id": "EyUJ14OD0MlJd27h",
+          "name": "Qwen Cloud account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "wan2.7-image-pro",
+          "mode": "list",
+          "cachedResultName": "wan2.7-image-pro"
+        },
+        "prompt": "={{ $json.final_image_prompt }}",
+        "imageOptions": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.alibabaCloud",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        976
+      ],
+      "id": "e1ba1efe-b1dd-46f4-bd21-e44185e07b7f",
+      "name": "Generate an image2",
+      "credentials": {
+        "alibabaCloudApi": {
+          "id": "EyUJ14OD0MlJd27h",
+          "name": "Qwen Cloud account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Read Topics": {
+      "main": [
+        [
+          {
+            "node": "Prepare Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Topics": {
+      "main": [
+        [
+          {
+            "node": "Has Topic 1?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Has Topic 2?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Has Topic 3?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fewer Than 3 Topics?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Topic 1?": {
+      "main": [
+        [
+          {
+            "node": "Wait until Mon 10AM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait until Mon 10AM": {
+      "main": [
+        [
+          {
+            "node": "Generate Post 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Post 1": {
+      "main": [
+        [
+          {
+            "node": "Format Post 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Post 1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Post 1": {
+      "main": [
+        [
+          {
+            "node": "Mark Topic 1 Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Topic 2?": {
+      "main": [
+        [
+          {
+            "node": "Wait until Wed 3PM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait until Wed 3PM": {
+      "main": [
+        [
+          {
+            "node": "Generate Post 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Post 2": {
+      "main": [
+        [
+          {
+            "node": "Format Post 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Post 2": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Post 2": {
+      "main": [
+        [
+          {
+            "node": "Mark Topic 2 Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Topic 3?": {
+      "main": [
+        [
+          {
+            "node": "Wait until Fri 3PM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait until Fri 3PM": {
+      "main": [
+        [
+          {
+            "node": "Generate Post 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Post 3": {
+      "main": [
+        [
+          {
+            "node": "Format Post 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Post 3": {
+      "main": [
+        [
+          {
+            "node": "Message a model2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Post 3": {
+      "main": [
+        [
+          {
+            "node": "Mark Topic 3 Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fewer Than 3 Topics?": {
+      "main": [
+        [
+          {
+            "node": "Notify Missing Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "shudelue": {
+      "main": [
+        [
+          {
+            "node": "Read Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Post 1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Post 3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Post 2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image1": {
+      "main": [
+        [
+          {
+            "node": "Publish Post 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Generate an image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Publish Post 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Generate an image2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image2": {
+      "main": [
+        [
+          {
+            "node": "Publish Post 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8e13166f-c9b8-4311-8b44-5fff24b021b7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ab0f3876fd290a7d7a194edf648e2eaaa1229866106e1a25fd0ec2fc22a28b2e"
+  },
+  "nodeGroups": [],
+  "id": "gnOs3m9VW87LdOV5",
+  "tags": []
+}
