@@ -1,0 +1,1067 @@
+{
+  "name": "Website Intelligence Audit Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "California Non-IT Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 530420290,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=530420290"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -704,
+        992
+      ],
+      "id": "d4d05f6a-9252-4775-80f4-9d52f071568b",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "filter-cond-1",
+              "leftValue": "={{ $json['Audit Status'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -480,
+        992
+      ],
+      "id": "7763ab19-b805-441e-96ad-f8088963e34f",
+      "name": "Filter"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        992
+      ],
+      "id": "5d496c50-faf3-411d-9764-84e4f1f9932a",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -48,
+        992
+      ],
+      "id": "0533ac52-4346-4d70-8e73-0cf01031647b",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.website }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        896
+      ],
+      "id": "158befd7-0110-43be-a198-d63f93fdcfa6",
+      "name": "Fetch Homepage",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "if-cond-1",
+              "leftValue": "={{ $json.error !== undefined || $json.statusCode < 200 || $json.statusCode >= 300 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        432,
+        896
+      ],
+      "id": "657f9f34-9bdc-4b00-88c5-3bb25a45ef77",
+      "name": "Site Reachable?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "mf-1",
+              "name": "Audit Status",
+              "value": "Failed: Unreachable",
+              "type": "string"
+            },
+            {
+              "id": "mf-2",
+              "name": "Failure Reason",
+              "value": "={{ $json.error?.message || $json.statusCode || 'Timeout' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        640,
+        768
+      ],
+      "id": "2d55f84e-0a52-4a2b-8bcd-4bab261c0565",
+      "name": "Mark Failed"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "California Non-IT Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 530420290,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=530420290"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Loop Over Items').item.json.row_number }}",
+            "Audit Status": "={{ $json['Audit Status'] }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Business Type",
+              "displayName": "Business Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone number",
+              "displayName": "phone number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Audit Status",
+              "displayName": "Audit Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Outreach Message",
+              "displayName": "Outreach Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PDF Report Link",
+              "displayName": "PDF Report Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        864,
+        768
+      ],
+      "id": "5414602c-3296-42a2-b94b-2c49293918d5",
+      "name": "Update Row - Failed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        976
+      ],
+      "id": "9ab5964a-e3af-48e1-bd98-8adb09d2fddb",
+      "name": "Rate Limit Pause"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={{ encodeURIComponent($('Loop Over Items').item.json.website) }}&strategy=mobile&category=PERFORMANCE&category=ACCESSIBILITY&category=SEO&category=BEST_PRACTICES&key=YOUR_GOOGLE_PAGESPEED_API_KEY",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        864,
+        976
+      ],
+      "id": "21be5588-19cd-486d-bbb1-c07c59b6c44e",
+      "name": "PageSpeed Insights",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Pulls the raw HTML fetched earlier and the PageSpeed JSON, computes technical scores.\n// Pure regex-based parsing on purpose -- n8n's sandboxed task runner (2.x) blocks\n// require() for external npm modules like cheerio, so this avoids needing any module.\nconst fetchResult = $('Fetch Homepage').item.json;\nconst rawHtml = fetchResult.data || fetchResult.body || '';\nconst headers = fetchResult.headers || {};\nconst websiteUrl = $('Loop Over Items').item.json.website;\n\nfunction matchOne(re, str) {\n  const m = str.match(re);\n  return m ? (m[1] || '').trim() : '';\n}\nfunction countMatches(re, str) {\n  const m = str.match(re);\n  return m ? m.length : 0;\n}\n\n// --- Metadata ---\nconst title = matchOne(/<title[^>]*>([\\s\\S]*?)<\\/title>/i, rawHtml);\nconst metaDesc = matchOne(/<meta[^>]+name=[\"']description[\"'][^>]*content=[\"']([^\"']*)[\"']/i, rawHtml)\n  || matchOne(/<meta[^>]+content=[\"']([^\"']*)[\"'][^>]*name=[\"']description[\"']/i, rawHtml)\n  || matchOne(/<meta[^>]+property=[\"']og:description[\"'][^>]*content=[\"']([^\"']*)[\"']/i, rawHtml);\nconst ogTitle = matchOne(/<meta[^>]+property=[\"']og:title[\"'][^>]*content=[\"']([^\"']*)[\"']/i, rawHtml);\nconst canonical = matchOne(/<link[^>]+rel=[\"']canonical[\"'][^>]*href=[\"']([^\"']*)[\"']/i, rawHtml);\n\nlet metadataScore = 0;\nif (title) metadataScore += 3;\nif (metaDesc) metadataScore += 3;\nif (ogTitle) metadataScore += 2;\nif (canonical) metadataScore += 2;\n\n// --- Page Structure ---\nconst h1Count = countMatches(/<h1[\\s>]/gi, rawHtml);\nconst h2Count = countMatches(/<h2[\\s>]/gi, rawHtml);\nlet pageStructureScore = 0;\nif (h1Count === 1) pageStructureScore += 6;\nelse if (h1Count > 1) pageStructureScore += 3;\nif (h2Count > 0) pageStructureScore += 4;\n\n// --- Schema Markup ---\nconst hasSchema = /<script[^>]+type=[\"']application\\/ld\\+json[\"']/i.test(rawHtml);\nconst schemaScore = hasSchema ? 10 : 0;\n\n// --- Indexability ---\nconst robotsMeta = matchOne(/<meta[^>]+name=[\"']robots[\"'][^>]*content=[\"']([^\"']*)[\"']/i, rawHtml).toLowerCase();\nconst isNoIndex = robotsMeta.includes('noindex');\nconst indexabilityScore = isNoIndex ? 0 : 10;\n\n// --- Real-time Active SSL & Security Checker ---\n\n// 1. Fetch Homepage node se raw active response aur URL trace nikalein\nconst activeResponseUrl = fetchResult.url || fetchResult.effectiveUrl || '';\nconst redirectLocation = headers['location'] || '';\n\n// 2. Real-time active protocols check (Sheet ke text string pe depend NAHI karta)\nconst isActiveHttps = \n  activeResponseUrl.toLowerCase().startsWith('https://') || \n  redirectLocation.toLowerCase().startsWith('https://') ||\n  websiteUrl.toLowerCase().startsWith('https://');\n\n// 3. Real SSL Handshake & Certificate Verification:\n// Agar page 200 OK return kar raha hai aur connection HTTPS hai\nconst isSslValid = isActiveHttps && fetchResult.statusCode >= 200 && fetchResult.statusCode < 400;\n\n// 4. Dynamic Scores Calculation\nconst sslScore = isSslValid ? 10 : 0;\n\n// Security headers active presence check\nconst hstsPresent = !!headers['strict-transport-security'];\nconst xfoPresent = !!headers['x-frame-options'];\nconst cspPresent = !!headers['content-security-policy'];\nconst xctoPresent = !!headers['x-content-type-options'];\n\nlet securityScore = (isSslValid ? 4 : 0) + \n                    (hstsPresent ? 2 : 0) + \n                    (xfoPresent ? 1.5 : 0) + \n                    (cspPresent ? 1.5 : 0) + \n                    (xctoPresent ? 1 : 0);\n\nsecurityScore = Math.round(securityScore);\n\n// --- Links (internal linking + candidates for the broken-link check) ---\nconst linkRe = /<a\\s[^>]*href=[\"']([^\"']+)[\"'][^>]*>/gi;\nconst rawHrefs = [];\nlet lm;\nwhile ((lm = linkRe.exec(rawHtml)) !== null) rawHrefs.push(lm[1]);\n\nlet base;\ntry { base = new URL(websiteUrl); } catch (e) { base = null; }\nconst resolvedLinks = [];\nrawHrefs.forEach(href => {\n  if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return;\n  try { resolvedLinks.push(new URL(href, websiteUrl).href); } catch (e) {}\n});\nconst uniqueLinks = [...new Set(resolvedLinks)];\nconst internalLinks = base ? uniqueLinks.filter(l => { try { return new URL(l).hostname === base.hostname; } catch(e) { return false; } }) : [];\nconst internalLinkingScore = internalLinks.length >= 5 ? 10 : Math.round((internalLinks.length / 5) * 10);\n\n// --- Trust / policy / FAQ / contact / chat / payment ---\nconst hasPrivacy = /href=[\"'][^\"']*privacy[^\"']*[\"']/i.test(rawHtml);\nconst hasReturn = /href=[\"'][^\"']*(return|refund)[^\"']*[\"']/i.test(rawHtml);\nconst hasFAQ = /href=[\"'][^\"']*faq[^\"']*[\"']/i.test(rawHtml);\nconst hasContactPage = /href=[\"'][^\"']*contact[^\"']*[\"']/i.test(rawHtml);\n\n// Strip tags to get plain body text for phone/email/content checks\nconst bodyTextRaw = rawHtml\n  .replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')\n  .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')\n  .replace(/<[^>]+>/g, ' ')\n  .replace(/&nbsp;/g, ' ');\n\nconst phoneMatch = bodyTextRaw.match(/(\\+?\\d[\\d\\s().-]{7,}\\d)/);\nconst emailMatch = bodyTextRaw.match(/[\\w.+-]+@[\\w-]+\\.[\\w.-]+/);\nconst hasLiveChat = /tawk|intercom|crisp|zendesk|drift|tidio|livechat|whatsapp/i.test(rawHtml);\nconst hasPaymentOpts = /visa|mastercard|paypal|stripe|apple\\s*pay|google\\s*pay|cash on delivery|amex/i.test(rawHtml);\nconst hasBlogLink = /href=[\"'][^\"']*blog[^\"']*[\"']/i.test(rawHtml);\nconst hasSearchInput = /<input[^>]+type=[\"']search[\"']/i.test(rawHtml) || /<form[^>]+role=[\"']search[\"']/i.test(rawHtml) || /name=[\"'][^\"']*search[^\"']*[\"']/i.test(rawHtml);\nconst hasReviewSchema = /aggregateRating|\"@type\":\\s*\"Review\"/i.test(rawHtml);\nconst hasReviewWidget = /trustpilot|yotpo|judge\\.me|reviews\\.io|okendo/i.test(rawHtml);\n\nconst privacyPolicyScore = hasPrivacy ? 10 : 0;\nconst returnPolicyScore = hasReturn ? 10 : 0;\nconst faqScore = hasFAQ ? 10 : 0;\nconst contactInfoScore = Math.min(10, (hasContactPage ? 4 : 0) + (phoneMatch ? 3 : 0) + (emailMatch ? 3 : 0));\nconst liveChatScore = hasLiveChat ? 10 : 0;\nconst paymentOptionsScore = hasPaymentOpts ? 10 : 0;\nconst blogActivityScore = hasBlogLink ? 6 : 0;\nconst searchFunctionalityScore = hasSearchInput ? 8 : 2;\nconst reviewsTechScore = (hasReviewSchema || hasReviewWidget) ? 8 : 2;\n\n// --- Images (context only, not a visual quality judgment) ---\nconst imgTags = rawHtml.match(/<img\\b[^>]*>/gi) || [];\nlet imagesWithAlt = 0;\nimgTags.forEach(tag => { if (/alt=[\"'][^\"']+[\"']/i.test(tag)) imagesWithAlt++; });\nconst altRatio = imgTags.length > 0 ? imagesWithAlt / imgTags.length : 1;\n\n// --- PageSpeed derived scores ---\nconst psJson = $('PageSpeed Insights').item.json || {};\nconst lh = psJson.lighthouseResult || {};\nconst cats = lh.categories || {};\nconst performanceScore = cats.performance ? Math.round(cats.performance.score * 10) : null;\nconst accessibilityScore = cats.accessibility ? Math.round(cats.accessibility.score * 10) : Math.round(altRatio * 10);\nconst seoAuditScore = cats.seo ? Math.round(cats.seo.score * 10) : null;\n\nconst audits = lh.audits || {};\nconst lcp = audits['largest-contentful-paint'] ? audits['largest-contentful-paint'].numericValue : undefined;\nconst cls = audits['cumulative-layout-shift'] ? audits['cumulative-layout-shift'].numericValue : undefined;\nconst inp = audits['interactive'] ? audits['interactive'].numericValue : undefined;\nlet cwvScore = 10;\nif (lcp !== undefined) { if (lcp > 4000) cwvScore -= 4; else if (lcp > 2500) cwvScore -= 2; }\nif (cls !== undefined) { if (cls > 0.25) cwvScore -= 3; else if (cls > 0.1) cwvScore -= 1.5; }\nif (inp !== undefined) { if (inp > 5000) cwvScore -= 3; else if (inp > 3800) cwvScore -= 1.5; }\ncwvScore = Math.max(0, Math.round(cwvScore));\n\nconst websiteSpeedScore = performanceScore !== null ? performanceScore : 5;\nconst mobileResponsivenessScore = performanceScore !== null ? Math.round((performanceScore + accessibilityScore) / 2) : 5;\n\nlet onPageSeoScore = 0;\nif (title) onPageSeoScore += 3;\nif (metaDesc) onPageSeoScore += 3;\nif (h1Count === 1) onPageSeoScore += 2;\nif (canonical) onPageSeoScore += 2;\nconst seoScore = seoAuditScore !== null ? Math.round((onPageSeoScore + seoAuditScore) / 2) : onPageSeoScore;\n\nconst technicalSeoScore = Math.round((metadataScore + schemaScore + internalLinkingScore + pageStructureScore + indexabilityScore) / 5);\n\nlet cleanText = bodyTextRaw.replace(/\\s+/g, ' ').trim();\nif (cleanText.length > 3000) cleanText = cleanText.slice(0, 3000);\n\nreturn [{\n  json: {\n    websiteUrl,\n    technicalScores: {\n      metadata: metadataScore,\n      pageStructure: pageStructureScore,\n      schemaMarkup: schemaScore,\n      indexability: indexabilityScore,\n      ssl: sslScore,\n      security: securityScore,\n      internalLinking: internalLinkingScore,\n      privacyPolicy: privacyPolicyScore,\n      returnPolicy: returnPolicyScore,\n      faq: faqScore,\n      contactInformation: contactInfoScore,\n      liveChat: liveChatScore,\n      paymentOptions: paymentOptionsScore,\n      blogActivity: blogActivityScore,\n      searchFunctionality: searchFunctionalityScore,\n      reviewsTechnical: reviewsTechScore,\n      technicalSeo: technicalSeoScore,\n      websiteSpeed: websiteSpeedScore,\n      performance: performanceScore === null ? 5 : performanceScore,\n      accessibility: accessibilityScore,\n      seo: seoScore,\n      mobileResponsiveness: mobileResponsivenessScore,\n      coreWebVitals: cwvScore\n    },\n    linksToCheck: uniqueLinks.slice(0, 15),\n    cleanText,\n    pageTitle: title\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        976
+      ],
+      "id": "33fadbcf-02e8-4cfb-ae69-bd1e75a4bb80",
+      "name": "Technical Audit Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst links = $json.linksToCheck || [];\nconst results = await Promise.all(links.map(async (link) => {\n  try {\n    const controller = new AbortController();\n    const timeout = setTimeout(() => controller.abort(), 6000);\n    const res = await fetch(link, { method: 'HEAD', redirect: 'follow', signal: controller.signal });\n    clearTimeout(timeout);\n    return { link, ok: res.status < 400 };\n  } catch (e) {\n    return { link, ok: false };\n  }\n}));\n\nconst checked = results.length;\nconst broken = results.filter(r => !r.ok).length;\nconst brokenLinksScore = checked === 0 ? 5 : Math.round(((checked - broken) / checked) * 10);\n\nreturn [{\n  json: {\n    ...$json,\n    brokenLinksScore,\n    brokenLinksChecked: checked,\n    brokenLinksFound: broken\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        976
+      ],
+      "id": "3016fd31-bf5c-4294-b43a-da819766ada4",
+      "name": "Broken Link Checker"
+    },
+    {
+      "parameters": {
+        "jsCode": "const parserData = $('Technical Audit Parser').item.json;\nconst brokenData = $('Broken Link Checker').item.json;\nconst aiRaw = $json;\n\nlet aiParsed;\ntry {\n  // 1. Extract text regardless of which AI node structure was used\n  let rawText = \n    aiRaw.text?.text || \n    aiRaw.text || \n    aiRaw.candidates?.[0]?.content?.parts?.[0]?.text || \n    aiRaw.choices?.[0]?.message?.content || \n    \"\";\n\n  // 2. Strip out markdown code block wrappers (```json ... ```)\n  rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();\n\n  // 3. Parse clean JSON\n  aiParsed = JSON.parse(rawText);\n} catch (e) {\n  // Fallback only if JSON parsing fails\n  aiParsed = { \n    scores: {}, \n    summary: 'AI scoring unavailable for this site.', \n    topRecommendations: [] \n  };\n}\n\nconst tech = parserData.technicalScores;\nconst ai = aiParsed.scores || {};\n\nfunction s(cat, fallback) {\n  if (fallback === undefined) fallback = 5;\n  return (ai[cat] && ai[cat].score !== undefined) ? ai[cat].score : fallback;\n}\n\nconst allScores = {\n  'Homepage Quality': s('homepageQuality'),\n  'Navigation': s('navigation'),\n  'User Experience': s('userExperience'),\n  'Mobile Responsiveness': tech.mobileResponsiveness,\n  'Website Speed': tech.websiteSpeed,\n  'Performance': tech.performance,\n  'SEO': tech.seo,\n  'Accessibility': tech.accessibility,\n  'Broken Links': brokenData.brokenLinksScore,\n  'Security': tech.security,\n  'SSL': tech.ssl,\n  'Checkout Experience': s('checkoutExperience'),\n  'Payment Options': tech.paymentOptions,\n  'Search Functionality': s('searchAndFiltering', tech.searchFunctionality),\n  'Filtering': s('searchAndFiltering', tech.searchFunctionality),\n  'Product Pages': s('productPages'),\n  'Image Quality': s('imageQuality'),\n  'Content Quality': s('contentQuality'),\n  'Trust Signals': s('trustSignals'),\n  'Return Policy': tech.returnPolicy,\n  'Privacy Policy': tech.privacyPolicy,\n  'FAQ': tech.faq,\n  'Live Chat': tech.liveChat,\n  'Contact Information': tech.contactInformation,\n  'Reviews': Math.round((s('reviews') + tech.reviewsTechnical) / 2),\n  'Conversion Optimization': s('conversionAndCTAs'),\n  'Call-To-Actions': s('conversionAndCTAs'),\n  'Landing Pages': s('landingPages'),\n  'Blog Activity': tech.blogActivity,\n  'Technical SEO': tech.technicalSeo,\n  'Schema Markup': tech.schemaMarkup,\n  'Metadata': tech.metadata,\n  'Internal Linking': tech.internalLinking,\n  'Page Structure': tech.pageStructure,\n  'Indexability': tech.indexability,\n  'Core Web Vitals': tech.coreWebVitals\n};\n\nconst values = Object.values(allScores).filter(v => typeof v === 'number');\nconst overallScore = Math.round((values.reduce((a,b) => a+b, 0) / values.length) * 10) / 10;\n\nreturn [{\n  json: {\n    websiteUrl: parserData.websiteUrl,\n    pageTitle: parserData.pageTitle,\n    allScores,\n    overallScore,\n    summary: aiParsed.summary || 'Summary unavailable.',\n    recommendations: aiParsed.topRecommendations || []\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        976
+      ],
+      "id": "69f56640-de0a-4630-8ff6-9316876cd0ef",
+      "name": "Merge All Scores"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pull the score breakdown from \"Merge All Scores\" -- this node's own $json is\n// the raw LLM output from Basic LLM Chain1, not the score data.\nconst scoreData = $('Merge All Scores').item.json;\nconst aiRaw = $json;\n\nlet analysis;\ntry {\n  let rawText =\n    aiRaw.text?.text ||\n    aiRaw.text ||\n    aiRaw.candidates?.[0]?.content?.parts?.[0]?.text ||\n    aiRaw.choices?.[0]?.message?.content ||\n    \"\";\n  rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();\n  analysis = JSON.parse(rawText);\n} catch (e) {\n  analysis = { categoryAnalysis: [], executiveSummary: 'Detailed analysis unavailable for this site.', outreachMessage: '' };\n}\n\nfunction statusColor(status) {\n  switch (status) {\n    case 'excellent': return '#1a7f37';\n    case 'good': return '#2da44e';\n    case 'needs_improvement': return '#b98600';\n    case 'poor': return '#cf222e';\n    case 'critical': return '#a40e26';\n    default: return '#57606a';\n  }\n}\n\nconst categoryRows = (analysis.categoryAnalysis || []).map(function(c) {\n  return '<tr>' +\n    '<td style=\"padding:10px;border-bottom:1px solid #eee;font-weight:600;\">' + c.category + '</td>' +\n    '<td style=\"padding:10px;border-bottom:1px solid #eee;text-align:center;\">' +\n      '<span style=\"background:' + statusColor(c.status) + ';color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;\">' + c.score + '/10</span>' +\n    '</td>' +\n    '<td style=\"padding:10px;border-bottom:1px solid #eee;font-size:12px;color:#333;\">' + (c.whatIsLacking || '') + '</td>' +\n    '<td style=\"padding:10px;border-bottom:1px solid #eee;font-size:12px;color:#333;\">' + (c.actionableFix || '') + '</td>' +\n  '</tr>';\n}).join('');\n\nconst summaryParas = (analysis.executiveSummary || '')\n  .split(/\\n{2,}/).filter(Boolean)\n  .map(function(p) { return '<p style=\"line-height:1.6;margin-bottom:14px;\">' + p + '</p>'; })\n  .join('');\n\nconst overallStatus = scoreData.overallScore >= 7 ? 'good' : scoreData.overallScore >= 4 ? 'needs_improvement' : 'poor';\n\nconst html = '<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>' +\n  'body { font-family: Arial, Helvetica, sans-serif; color: #1f2328; margin: 0; padding: 40px; }' +\n  'h1 { font-size: 24px; margin-bottom: 4px; }' +\n  'h2 { font-size: 16px; margin-top: 32px; border-bottom: 2px solid #1f2328; padding-bottom: 6px; }' +\n  '.sub { color: #57606a; margin-bottom: 20px; }' +\n  '.overall { display:inline-block; background:' + statusColor(overallStatus) + '; color:#fff; padding:12px 24px; border-radius:8px; font-size:22px; font-weight:700; margin-bottom:20px; }' +\n  'table { width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; }' +\n  'th { text-align:left; padding:10px; border-bottom:2px solid #1f2328; }' +\n  '</style></head><body>' +\n  '<h1>Website Technical Audit Report</h1>' +\n  '<div class=\"sub\">' + scoreData.websiteUrl + ' — ' + (scoreData.pageTitle || '') + '</div>' +\n  '<div class=\"overall\">Overall Score: ' + scoreData.overallScore + '/10</div>' +\n  '<h2>Executive Summary</h2>' + summaryParas +\n  '<h2>Category Breakdown</h2>' +\n  '<table><tr><th>Category</th><th style=\"text-align:center;\">Score</th><th>What\\'s Lacking</th><th>Recommended Fix</th></tr>' +\n  categoryRows + '</table>' +\n  '</body></html>';\n\nreturn [{\n  json: {\n    websiteUrl: scoreData.websiteUrl,\n    pageTitle: scoreData.pageTitle,\n    overallScore: scoreData.overallScore,\n    summaryParas: summaryParas,\n    categoryRows: categoryRows,\n    outreachMessage: analysis.outreachMessage || ''\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2336,
+        976
+      ],
+      "id": "e36d9edf-0320-4130-9229-a5b4d5179f6d",
+      "name": "Build HTML Report"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rest.apitemplate.io/v2/create-pdf?template_id=YOUR_APITEMPLATE_TEMPLATE_ID",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2560,
+        976
+      ],
+      "id": "cce128eb-b979-42b2-b1b6-9c801e573cf6",
+      "name": "Generate PDF",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Merge All Scores').item.json.websiteUrl.replace(/https?:\\/\\//,'').replace(/\\W+/g,'_') }}_audit.pdf",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "YOUR_DRIVE_FOLDER_ID",
+          "mode": "list",
+          "cachedResultName": "Website Audit Reports",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/YOUR_DRIVE_FOLDER_ID"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2976,
+        976
+      ],
+      "id": "8f0a7e42-1b6e-4761-987c-88f15da41de4",
+      "name": "Upload PDF",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3200,
+        976
+      ],
+      "id": "4f23f240-8fc6-4a85-991f-00193ee2acbd",
+      "name": "Share PDF",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "California Non-IT Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 530420290,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=530420290"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Loop Over Items').item.json.row_number }}",
+            "Audit Status": "Completed",
+            "Outreach Message": "={{ $('Build HTML Report').item.json.outreachMessage }}",
+            "PDF Report Link": "={{ $('Share PDF').item.json.webViewLink }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Business Type",
+              "displayName": "Business Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone number",
+              "displayName": "phone number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Audit Status",
+              "displayName": "Audit Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Outreach Message",
+              "displayName": "Outreach Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PDF Report Link",
+              "displayName": "PDF Report Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3424,
+        976
+      ],
+      "id": "a35e3aa4-0011-4c9a-81d0-4af81eacd70c",
+      "name": "Update Row - Success",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a website auditor scoring specific subjective categories from page content. \nRespond with ONLY a JSON object matching exactly this shape:\n{\n  \"scores\": {\n    \"homepageQuality\": {\"score\": 5, \"reason\": \"...\"},\n    \"navigation\": {\"score\": 5, \"reason\": \"...\"},\n    \"userExperience\": {\"score\": 5, \"reason\": \"...\"},\n    \"checkoutExperience\": {\"score\": 5, \"reason\": \"...\"},\n    \"searchAndFiltering\": {\"score\": 5, \"reason\": \"...\"},\n    \"productPages\": {\"score\": 5, \"reason\": \"...\"},\n    \"imageQuality\": {\"score\": 5, \"reason\": \"...\"},\n    \"contentQuality\": {\"score\": 5, \"reason\": \"...\"},\n    \"trustSignals\": {\"score\": 5, \"reason\": \"...\"},\n    \"reviews\": {\"score\": 5, \"reason\": \"...\"},\n    \"conversionAndCTAs\": {\"score\": 5, \"reason\": \"...\"},\n    \"landingPages\": {\"score\": 5, \"reason\": \"...\"}\n  },\n  \"summary\": \"2-3 sentence overall summary\",\n  \"topRecommendations\": [\"rec1\", \"rec2\", \"rec3\"]\n}\n\nWebsite: {{ $json.websiteUrl }}\nPage title: {{ $json.pageTitle }}\n\nTechnical signals already measured:\n{{ JSON.stringify($json.technicalScores) }}\n\nPage text extracted from the homepage:\n{{ $json.cleanText }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1472,
+        976
+      ],
+      "id": "470a6965-0fe7-4e6e-916d-caea152f42d0",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1472,
+        1216
+      ],
+      "id": "fc079752-4f48-4f73-b9b0-b13d4160ec9e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Generate PDF').item.json.download_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2768,
+        976
+      ],
+      "id": "4f2386bf-d463-4a58-85cf-d4a5750626d0",
+      "name": "Download PDF"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtMinute": null
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -928,
+        992
+      ],
+      "id": "61992828-f586-4640-ab16-96ce45300988",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=ROLE:You are a **Chief Technology Officer (CTO), Senior Website Auditor, Conversion Rate Optimization (CRO) Specialist, UX Consultant, SEO Specialist, Security Analyst, and Professional Full-Stack Developer** with 20+ years of industry experience.\n\nYour responsibility is to perform a **deep executive-level website audit analysis** using the measured audit data provided to you.\n\nYou must think like a CTO who is evaluating the website from both:\n\n* Technical quality\n* Business and revenue impact\n\nYour analysis must identify not only what is wrong, but **why it matters, how it affects users/conversions, and exactly what should be done to fix it.**\n\n---\n\n## INPUT DATA\n\nWebsite URL:\n\n{{ $json.websiteUrl }}\n\nMeasured Category Scores:\n\n{{ JSON.stringify($json.allScores) }}\n\nOverall Website Score:\n\n{{ $json.overallScore }}\n\n---\n\n# PRIMARY OBJECTIVE\n\nAnalyze **every category provided inside `allScores`**.\n\nDo NOT skip categories.\n\nDo NOT invent categories.\n\nDo NOT change the category names unnecessarily.\n\nFor every category, determine:\n\n1. The current performance level.\n2. What is lacking.\n3. The likely technical or UX problem.\n4. The business/conversion impact.\n5. The specific actions required to improve the score toward 10/10.\n\nThe analysis must be based primarily on the supplied audit measurements.\n\n**Never claim that something was detected if the supplied data does not support that conclusion.**\n\nWhen exact technical evidence is unavailable, use cautious language such as:\n\n* \"The score indicates...\"\n* \"This suggests...\"\n* \"The audit data points to...\"\n* \"This should be verified...\"\n* \"A likely issue is...\"\n\nDo NOT fabricate technical findings.\n\n---\n\n# SCORE INTERPRETATION\n\nUse the following scoring framework:\n\n### 9–10 = Excellent\n\nThe category is performing very well.\n\nIdentify:\n\n* What is already strong.\n* Any minor optimization opportunity.\n* How to maintain or further improve performance.\n\nStatus:\n\n`excellent`\n\n### 7–8.9 = Good\n\nThe category is generally healthy but has optimization opportunities.\n\nStatus:\n\n`good`\n\n### 5–6.9 = Needs Improvement\n\nThe category has noticeable weaknesses that may affect user experience, SEO, trust, performance, or conversions.\n\nStatus:\n\n`needs_improvement`\n\n### 3–4.9 = Poor\n\nThe category contains significant problems that should be addressed.\n\nStatus:\n\n`poor`\n\n### 0–2.9 = Critical\n\nThe category represents a serious technical, usability, security, SEO, or conversion risk.\n\nStatus:\n\n`critical`\n\nIf the input score is not numeric, infer the status only when reasonably possible. Otherwise use:\n\n`unknown`\n\n---\n\n# CATEGORY ANALYSIS REQUIREMENTS\n\nFor every category, generate an object containing:\n\n### category\n\nUse the category name from the input data.\n\n### score\n\nUse the supplied score.\n\nDo not modify or fabricate the score.\n\n### status\n\nDetermine the status using the scoring framework above.\n\n### whatIsLacking\n\nProvide a concise but technically meaningful explanation.\n\nExplain:\n\n* What the score indicates.\n* What appears to be missing or underperforming.\n* Why the issue matters.\n* What type of user/business impact it can create.\n\nAvoid generic statements such as:\n\n\"Improve the website.\"\n\nInstead provide specific diagnostic reasoning.\n\nBad:\n\n\"SEO needs improvement.\"\n\nGood:\n\n\"The SEO score indicates weaknesses in the site's search visibility foundation. Potential gaps may include incomplete metadata, weak heading hierarchy, insufficient internal linking, missing structured data, or poorly optimized page content. These issues can reduce organic discoverability and limit qualified traffic.\"\n\nOnly mention specific issues when supported by the available audit data. Otherwise clearly label them as areas requiring verification.\n\n### actionableFix\n\nProvide a practical remediation strategy.\n\nThe fix should explain:\n\n1. What should be changed.\n2. How it should be changed.\n3. What should be verified after implementation.\n4. What outcome the change is expected to improve.\n\nWhen appropriate, mention relevant technologies or implementation areas such as:\n\n* HTML\n* CSS\n* JavaScript\n* React\n* Next.js\n* WordPress\n* APIs\n* databases\n* CDN\n* caching\n* image optimization\n* schema markup\n* metadata\n* Core Web Vitals\n* accessibility attributes\n* SSL/TLS\n* HTTP headers\n* checkout implementation\n* analytics\n* conversion tracking\n\nDo not assume the website uses a particular technology unless the input data confirms it.\n\n---\n\n# CONVERSION-IMPACT THINKING\n\nFor every category, think beyond technical correctness.\n\nAsk:\n\n**\"How could this issue cause a visitor to leave, hesitate, distrust the business, or fail to convert?\"**\n\nConsider impacts such as:\n\n* Higher bounce rate\n* Lower engagement\n* Reduced trust\n* Lost leads\n* Abandoned checkout\n* Poor mobile experience\n* Lower search visibility\n* Reduced organic traffic\n* Slower page experience\n* Lower accessibility\n* Security concerns\n* Reduced customer confidence\n* Poor product discovery\n* Friction during navigation\n* Reduced CTA engagement\n\nDo not claim that a specific conversion loss occurred unless actual analytics data was provided.\n\nUse terms such as:\n\n* \"can contribute to\"\n* \"may result in\"\n* \"creates a risk of\"\n* \"is likely to increase friction\"\n\n---\n\n# PRIORITIZATION LOGIC\n\nWhile analyzing the categories, identify the most commercially important problems.\n\nPrioritize issues based on:\n\n1. Security and trust risk\n2. Conversion blockers\n3. Checkout/payment problems\n4. Critical UX problems\n5. Mobile usability\n6. Performance problems\n7. SEO visibility problems\n8. Navigation/discovery problems\n9. Content/trust weaknesses\n10. Minor optimization opportunities\n\nThe two most important weaknesses should later be used in the outreach message.\n\nDo NOT automatically choose the two lowest scores.\n\nInstead select the two issues with the strongest combination of:\n\n* Severity\n* Business impact\n* Conversion impact\n* User friction\n* Urgency\n\n---\n\n# EXECUTIVE SUMMARY\n\nCreate an `executiveSummary` consisting of **exactly 3 paragraphs**.\n\n### Paragraph 1 — Overall Diagnosis\n\nExplain the overall health of the website using:\n\n* Overall score\n* Strong areas\n* Weak areas\n* General technical condition\n* General user experience\n\n### Paragraph 2 — Conversion Leaks\n\nFocus specifically on:\n\n* Where visitors may experience friction\n* What could prevent users from trusting the website\n* What could reduce engagement\n* What could cause users to abandon important actions\n* Which weaknesses represent the largest commercial opportunities\n\n### Paragraph 3 — Technical Priorities\n\nExplain:\n\n* The most important technical problems\n* What should be fixed first\n* What should be fixed second\n* What longer-term improvements should be considered\n* How fixing these areas can improve the overall website experience and conversion potential\n\nThe summary must sound like an **executive CTO audit**, not an automated generic website report.\n\n---\n\n# OUTREACH MESSAGE\n\nCreate a short, personalized cold outreach message suitable for:\n\n* Email\n* LinkedIn\n\nThe message must be concise and natural.\n\nStructure:\n\n1. Personalized opening mentioning the website/business.\n2. Brief statement that an audit was performed.\n3. Highlight the **2 biggest critical weaknesses** discovered.\n4. Explain the business/conversion relevance of those weaknesses.\n5. Mention that a detailed PDF audit report is available.\n6. End with a low-pressure call to action.\n\nThe message should sound like a real professional reaching out to a business owner.\n\nAvoid:\n\n* Aggressive sales language\n* Fake urgency\n* Generic marketing clichés\n* \"I hope you're doing well\"\n* Excessive technical jargon\n* Overly long explanations\n* Unsupported claims\n* Claims that you manually contacted or spoke with the owner\n\nDo not say the website is \"broken\" unless the supplied audit data clearly supports that conclusion.\n\n---\n\n# OUTPUT FORMAT\n\nReturn **ONLY valid JSON**.\n\nDo NOT include:\n\n* Markdown\n* Code fences\n* Explanations outside the JSON\n* Introductory text\n* Trailing comments\n\nThe response must follow this exact structure:\n\n{\n\"categoryAnalysis\": [\n{\n\"category\": \"Category Name\",\n\"score\": 4,\n\"status\": \"poor\",\n\"whatIsLacking\": \"Specific evidence-based technical explanation.\",\n\"actionableFix\": \"Specific step-by-step remediation strategy.\"\n}\n],\n\"executiveSummary\": \"Paragraph 1. Paragraph 2. Paragraph 3.\",\n\"outreachMessage\": \"Short personalized outreach message.\"\n}\n\n---\n\n# JSON VALIDATION RULES\n\nBefore returning the response, verify:\n\n* `categoryAnalysis` is an array.\n* Every supplied category is analyzed exactly once.\n* No categories are omitted.\n* No categories are invented.\n* `score` matches the supplied score.\n* `status` follows the scoring framework.\n* `whatIsLacking` contains meaningful analysis.\n* `actionableFix` contains actionable remediation.\n* `executiveSummary` contains exactly 3 paragraphs.\n* `outreachMessage` is concise and personalized.\n* The outreach message focuses on the two highest-priority weaknesses.\n* The output is valid JSON.\n* All quotation marks inside JSON strings are properly escaped.\n* There are no comments.\n* There is no Markdown.\n* There is no text before or after the JSON.\n\n## FINAL PRINCIPLE\n\nThink like a **CTO + CRO specialist**, not a simple score generator.\n\nThe purpose of this audit is not merely to explain why a website received a score.\n\nThe purpose is to identify:\n\n**WHAT IS WRONG → WHY IT MATTERS → HOW IT AFFECTS USERS → HOW IT AFFECTS BUSINESS → WHAT SHOULD BE FIXED → WHAT SHOULD BE FIXED FIRST.**\n\nEvery recommendation must be practical, technically credible, and commercially relevant.\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1984,
+        976
+      ],
+      "id": "3443bbed-c37f-4085-8302-d0f8e5253c48",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1984,
+        1200
+      ],
+      "id": "3b04f720-bbe0-428f-891b-da107b26a29a",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Fetch Homepage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Homepage": {
+      "main": [
+        [
+          {
+            "node": "Site Reachable?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Site Reachable?": {
+      "main": [
+        [
+          {
+            "node": "Mark Failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rate Limit Pause",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Failed": {
+      "main": [
+        [
+          {
+            "node": "Update Row - Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Row - Failed": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limit Pause": {
+      "main": [
+        [
+          {
+            "node": "PageSpeed Insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PageSpeed Insights": {
+      "main": [
+        [
+          {
+            "node": "Technical Audit Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical Audit Parser": {
+      "main": [
+        [
+          {
+            "node": "Broken Link Checker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Broken Link Checker": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge All Scores": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build HTML Report": {
+      "main": [
+        [
+          {
+            "node": "Generate PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate PDF": {
+      "main": [
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload PDF": {
+      "main": [
+        [
+          {
+            "node": "Share PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share PDF": {
+      "main": [
+        [
+          {
+            "node": "Update Row - Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Row - Success": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Merge All Scores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Upload PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Build HTML Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "id": "tWMgKWHiutuvKTNf",
+  "tags": []
+}
