@@ -1,0 +1,363 @@
+{
+  "name": "California Non-IT Leads",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const categories = [\n  \"Bakery\", \"Plumber\", \"Electrician\", \"HVAC Contractor\", \"Roofing Contractor\",\n  \"Landscaping Service\", \"Pest Control Service\", \"Locksmith\", \"Cleaning Service\",\n  \"Concrete Contractor\", \"General Contractor\", \"Dental Clinic\", \"Chiropractor\",\n  \"Veterinary Clinic\", \"Optometrist\", \"Physical Therapy Clinic\", \"Dermatologist\",\n  \"Urgent Care Center\", \"Medical Clinic\", \"Home Health Care Service\", \"Orthodontist\",\n  \"Auto Repair Shop\", \"Auto Body Shop\", \"Tire Shop\", \"Car Detailing Service\",\n  \"Transmission Repair Shop\", \"Brake Repair Shop\", \"Oil Change Service\",\n  \"Windshield Repair Service\", \"Towing Service\", \"Smog Check Station\",\n  \"Accountant\", \"Tax Preparation Service\", \"Insurance Agency\", \"Real Estate Agency\",\n  \"Mortgage Broker\", \"Law Firm\", \"Family Lawyer\", \"Immigration Lawyer\",\n  \"Bankruptcy Lawyer\", \"Notary Public\", \"Restaurant\", \"Pizza Restaurant\",\n  \"Mexican Restaurant\", \"Chinese Restaurant\", \"Indian Restaurant\", \"Coffee Shop\",\n  \"Catering Service\", \"Food Truck\", \"Ice Cream Shop\", \"Beauty Salon\", \"Barber Shop\",\n  \"Nail Salon\", \"Day Spa\", \"Massage Therapist\", \"Hair Salon\", \"Tattoo Studio\",\n  \"Yoga Studio\", \"Fitness Center\", \"Personal Trainer\", \"Property Management Company\",\n  \"Commercial Cleaning Service\", \"Security Guard Company\", \"Janitorial Service\",\n  \"Moving Company\", \"Storage Facility\", \"Window Cleaning Service\", \"Painting Contractor\",\n  \"Flooring Contractor\", \"Carpet Cleaning Service\", \"Child Care Center\",\n  \"Senior Care Service\", \"Assisted Living Facility\", \"Funeral Home\", \"Wedding Venue\",\n  \"Event Planner\", \"Photography Studio\", \"Printing Service\", \"Sign Company\",\n  \"Courier Service\", \"Animal Hospital\", \"Pet Grooming Service\", \"Dog Training Service\",\n  \"Pool Cleaning Service\", \"Solar Panel Installer\", \"Water Damage Restoration Service\",\n  \"Fire Damage Restoration Service\", \"Tree Service\", \"Fence Contractor\",\n  \"Garage Door Repair Service\", \"Commercial Electrician\", \"Commercial Plumber\",\n  \"Commercial Roofing Contractor\", \"Commercial HVAC Contractor\", \"Commercial Painter\",\n  \"Commercial Pest Control Service\", \"Commercial Cleaning Company\",\n  \"Industrial Equipment Repair Service\", \"Machine Shop\", \"Welding Service\",\n  \"Architect\", \"Structural Engineer\", \"Civil Engineer\", \"Interior Designer\",\n  \"Landscape Architect\", \"Surveyor\", \"Engineering Consultant\", \"Building Inspector\",\n  \"Construction Company\", \"Building Restoration Service\", \"Drywall Contractor\",\n  \"Stucco Contractor\", \"Tile Contractor\", \"Kitchen Remodeling Contractor\",\n  \"Bathroom Remodeling Contractor\", \"Cabinet Maker\", \"Custom Home Builder\",\n  \"Deck Builder\", \"Fence Installation Company\", \"Glass Repair Company\",\n  \"Window Installation Company\", \"Garage Door Installer\", \"Door Installation Company\",\n  \"Insulation Contractor\", \"Foundation Repair Company\", \"Masonry Contractor\",\n  \"Excavation Contractor\", \"Demolition Contractor\", \"Asphalt Contractor\",\n  \"Medical Laboratory\", \"Diagnostic Imaging Center\", \"Cardiology Clinic\",\n  \"Neurology Clinic\", \"ENT Specialist\", \"Pediatric Clinic\", \"Women's Health Clinic\",\n  \"Dialysis Center\", \"Mental Health Clinic\", \"Occupational Therapy Clinic\",\n  \"Dental Laboratory\", \"Endodontist\", \"Periodontist\", \"Oral Surgeon\",\n  \"Prosthodontist\", \"Pediatric Dentist\", \"Cosmetic Dentist\", \"Dental Implant Clinic\",\n  \"Emergency Dentist\", \"Dental Hygienist\", \"CPA Firm\", \"Bookkeeping Service\",\n  \"Payroll Service\", \"Financial Advisor\", \"Investment Advisor\", \"Business Consultant\",\n  \"Business Broker\", \"Commercial Insurance Agency\", \"Life Insurance Agency\",\n  \"Tax Consultant\", \"Employment Agency\", \"Staffing Agency\", \"Recruitment Agency\",\n  \"Executive Search Firm\", \"Payroll Company\", \"HR Consulting Firm\", \"Training Center\",\n  \"Business Coaching Service\", \"Corporate Training Company\", \"Translation Service\",\n  \"Commercial Printer\", \"Packaging Company\", \"Label Printing Company\",\n  \"Sign Manufacturer\", \"Embroidery Service\", \"Screen Printing Company\",\n  \"Promotional Products Supplier\", \"Graphic Printing Company\", \"Mailing Service\",\n  \"Document Shredding Service\", \"Hotel\", \"Motel\", \"Bed and Breakfast\", \"Event Venue\",\n  \"Conference Center\", \"Banquet Hall\", \"Wedding Planner\", \"Party Rental Company\",\n  \"Travel Agency\", \"Warehousing Company\", \"Distribution Center\", \"Freight Forwarder\",\n  \"Trucking Company\", \"Logistics Company\", \"Moving and Storage Company\",\n  \"Shipping Company\", \"Cold Storage Facility\", \"Fulfillment Center\", \"Metal Fabricator\",\n  \"Steel Fabricator\", \"Plastic Manufacturer\", \"Rubber Manufacturer\",\n  \"Precision Machining Company\", \"Industrial Equipment Supplier\", \"Hydraulic Repair Company\",\n  \"Industrial Automation Service\", \"Welding Fabrication Company\", \"Pressure Washing Company\",\n  \"Office Cleaning Company\", \"Industrial Cleaning Company\", \"Window Washing Company\",\n  \"Floor Cleaning Company\", \"Biohazard Cleanup Company\", \"Crime Scene Cleanup Company\",\n  \"Mold Remediation Company\", \"Private School\", \"Tutoring Center\", \"Music School\",\n  \"Driving School\", \"Language School\", \"Vocational School\", \"Dance School\",\n  \"Martial Arts School\", \"Daycare Center\", \"Preschool\", \"Security System Installer\",\n  \"Fire Protection Company\", \"Alarm Company\", \"CCTV Installation Company\",\n  \"Access Control Company\", \"Private Investigator\", \"Security Consultant\",\n  \"Guard Service\", \"Fire Alarm Contractor\", \"Emergency Restoration Company\",\n  \"Commercial Refrigeration Service\", \"Restaurant Equipment Repair\",\n  \"Appliance Repair Company\", \"Generator Repair Company\", \"Forklift Repair Company\",\n  \"Diesel Engine Repair Company\", \"Industrial Maintenance Company\",\n  \"Equipment Rental Company\", \"Heavy Equipment Repair\", \"Pump Repair Company\",\n  \"Funeral Service\", \"Cremation Service\", \"Monument Company\", \"Florist\",\n  \"Event Decorator\", \"Tent Rental Company\", \"Audio Visual Rental Company\",\n  \"Photo Booth Rental Company\", \"Limousine Service\", \"Charter Bus Company\",\n  \"Commercial Flooring Company\", \"Commercial Landscaping Company\", \"Industrial Contractor\",\n  \"Commercial Remodeling Company\", \"Building Maintenance Company\", \"Facility Management Company\"\n];\n\n// Broad California Regions to cover Northern, Central, and Southern CA\nconst CaliforniaRegions = [\n  \"California\",\n  \"Los Angeles County, CA\",\n  \"Orange County, CA\",\n  \"San Diego County, CA\",\n  \"San Francisco Bay Area, CA\",\n  \"Sacramento Metro, CA\",\n  \"Inland Empire, CA\",\n  \"Central Valley, CA\",\n  \"Silicon Valley, CA\",\n  \"Central Coast, CA\"\n];\n\nconst searchQueries = [];\n\nfor (const cat of categories) {\n  for (const region of CaliforniaRegions) {\n    searchQueries.push({\n      json: {\n        category: cat,\n        location: region,\n        search_query: `${cat} in ${region}`\n      }\n    });\n  }\n}\n\n// Shuffle queries randomly so every execution gets broad coverage across CA\nsearchQueries.sort(() => Math.random() - 0.5);\n\n// Return 5 random queries per execution (Yields ~100 California businesses per run)\nreturn searchQueries.slice(0,5);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        192
+      ],
+      "id": "1e0d774c-a959-4418-9150-b6c2be7e380d",
+      "name": "Define Search Matrix"
+    },
+    {
+      "parameters": {
+        "jsCode": "const places = $input.first().json.places || [];\nconst currentMeta = $(\"Define Search Matrix\").first().json;\nconst cleanLeads = [];\n\nconst blacklist = [\"software\", \"tech\", \"cloud\", \"it services\", \"web design\", \"developer\", \"digital agency\", \"cybersecurity\"];\n\nfor (const place of places) {\n  const name = place.title || \"\";\n  const website = place.website || \"\";\n  const phone = place.phoneNumber || \"N/A\";\n  const address = place.address || currentMeta.location || \"California\";\n  const category = place.category || currentMeta.category || \"Local Business\";\n\n  // Filter out IT/Tech companies\n  const isIT = blacklist.some(word => name.toLowerCase().includes(word) || website.toLowerCase().includes(word));\n\n  if (name && !isIT) {\n    cleanLeads.push({\n      json: {\n        business_name: name,\n        website: website,\n        phone: phone,\n        address: address,\n        category: category\n      }\n    });\n  }\n}\n\nreturn cleanLeads.length > 0 ? cleanLeads : [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        192
+      ],
+      "id": "055a0776-5493-4080-b6c6-333c7b0bbf05",
+      "name": "Parse Business Records",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst blacklist = [\"software\", \"tech\", \"cloud\", \"it services\", \"web design\", \"developer\", \"digital agency\", \"cybersecurity\"];\nconst validLeads = [];\n\nfor (const item of items) {\n  const name = (item.json.business_name || \"\").toLowerCase();\n  const website = (item.json.website || \"\").toLowerCase();\n\n  const isIT = blacklist.some(word => name.includes(word) || website.includes(word));\n\n  if (!isIT) {\n    validLeads.push(item);\n  }\n}\n\nreturn validLeads;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        192
+      ],
+      "id": "d5b209f5-4e5e-4919-ab9b-f0b112ce751a",
+      "name": "Non-IT Blacklist & Classifier",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1184,
+        192
+      ],
+      "id": "f5f69d81-c0d4-4247-8c71-790984f02bdc",
+      "name": "Batch Processor(prevents server)"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.website && $json.website.startsWith('http') ? $json.website : 'https://example.com' }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 5
+            }
+          },
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1392,
+        288
+      ],
+      "id": "d8f2428a-c0b9-4784-a525-70cffe463cae",
+      "name": "Crawl Business Website",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const htmlContent = $json.data || $json.body || \"\";\nconst lead = $(\"Batch Processor(prevents server)\").item.json;\n\n// Extract Email via Regex from crawled website HTML\nconst emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g;\nconst foundEmails = htmlContent.match(emailRegex) || [];\n\nconst cleanedEmails = [...new Set(foundEmails)].filter(email => {\n  const e = email.toLowerCase();\n  return !e.endsWith(\".png\") && \n         !e.endsWith(\".jpg\") && \n         !e.endsWith(\".gif\") && \n         !e.endsWith(\".webp\") &&\n         !e.includes(\"sentry\") && \n         !e.includes(\"wixpress\");\n});\n\nreturn {\n  json: {\n    \"Business Type\": lead.category || \"Local Business\",\n    \"name\": lead.business_name,\n    \"phone number\": lead.phone,\n    \"address\": lead.address,\n    \"website\": lead.website || \"N/A\",\n    \"email\": cleanedEmails.length > 0 ? cleanedEmails[0] : \"N/A\"\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        288
+      ],
+      "id": "d2a490f3-7c4b-4a1b-8913-ae6aa3c16ce9",
+      "name": "Regex Email & Data Extractor"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "California Non-IT Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "Business Type": "={{ $json[\"Business Type\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Business Type",
+              "displayName": "Business Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Business Name",
+              "displayName": "Business Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website ",
+              "displayName": "Website ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1808,
+        288
+      ],
+      "id": "7bd990a9-2cb1-46b1-a490-4c555f67c23c",
+      "name": "Save to Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://google.serper.dev/places",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "YOUR_SERPER_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "=={{ $json.search_query }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        560,
+        192
+      ],
+      "id": "eb153287-efb3-439e-9680-5d710c401f8d",
+      "name": "Serper.dev Search",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        192
+      ],
+      "id": "dfe42644-c487-4557-8a8f-808f58030ad3",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Define Search Matrix": {
+      "main": [
+        [
+          {
+            "node": "Serper.dev Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Business Records": {
+      "main": [
+        [
+          {
+            "node": "Non-IT Blacklist & Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Non-IT Blacklist & Classifier": {
+      "main": [
+        [
+          {
+            "node": "Batch Processor(prevents server)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Processor(prevents server)": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Crawl Business Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crawl Business Website": {
+      "main": [
+        [
+          {
+            "node": "Regex Email & Data Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Regex Email & Data Extractor": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Batch Processor(prevents server)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Serper.dev Search": {
+      "main": [
+        [
+          {
+            "node": "Parse Business Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Define Search Matrix",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "id": "UbcBj9lRdV2DgeyC",
+  "tags": []
+}
