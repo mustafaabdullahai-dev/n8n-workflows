@@ -1,0 +1,298 @@
+{
+  "name": "Finding Ecommerce Business through Agent(Scraping)",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        -112
+      ],
+      "id": "dcea1bf8-969a-486f-8756-ff704eddbbc0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/actors/compass~crawler-google-places/runs?token=YOUR_APIFY_API_TOKEN",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"searchStringsArray\": [\n    \"ecommerce Lahore\",\n    \"ecommerce store Lahore\",\n    \"ecommerce company Lahore\",\n    \"ecommerce business Lahore\",\n    \"online store Lahore\",\n    \"online shopping Lahore\",\n    \"online shopping store Lahore\",\n    \"e-commerce service Lahore\",\n    \"online retailer Lahore\",\n    \"shopping website Lahore\",\n    \"digital store Lahore\",\n    \"internet store Lahore\",\n    \"online marketplace Lahore\",\n    \"fashion store Lahore\",\n    \"online clothing store Lahore\",\n    \"clothing store Lahore\",\n    \"women clothing store Lahore\",\n    \"men clothing store Lahore\",\n    \"kids clothing store Lahore\",\n    \"shoe store Lahore\",\n    \"online shoe store Lahore\",\n    \"bag store Lahore\",\n    \"handbag store Lahore\",\n    \"jewelry store Lahore\",\n    \"watch store Lahore\",\n    \"cosmetics store Lahore\",\n    \"beauty products store Lahore\",\n    \"perfume store Lahore\",\n    \"electronics store Lahore\",\n    \"online electronics store Lahore\",\n    \"mobile phone store Lahore\",\n    \"mobile accessories store Lahore\",\n    \"computer store Lahore\",\n    \"laptop store Lahore\",\n    \"computer accessories store Lahore\",\n    \"gaming store Lahore\",\n    \"camera store Lahore\",\n    \"appliance store Lahore\",\n    \"home appliances store Lahore\",\n    \"furniture store Lahore\",\n    \"home decor store Lahore\",\n    \"gift shop Lahore\",\n    \"toy store Lahore\",\n    \"baby store Lahore\",\n    \"pet store Lahore\",\n    \"book store Lahore\",\n    \"stationery store Lahore\",\n    \"office supplies store Lahore\",\n    \"sports store Lahore\",\n    \"fitness equipment store Lahore\",\n    \"grocery store Lahore\",\n    \"online grocery Lahore\",\n    \"grocery delivery Lahore\",\n    \"organic store Lahore\",\n    \"pharmacy Lahore\",\n    \"medical store Lahore\",\n    \"health products store Lahore\",\n    \"kitchenware store Lahore\",\n    \"hardware store Lahore\",\n    \"electrical store Lahore\",\n    \"car accessories store Lahore\",\n    \"auto parts store Lahore\",\n    \"wholesale store Lahore\",\n    \"department store Lahore\",\n    \"shopping mall Lahore\",\n    \"retail store Lahore\",\n    \"retail shop Lahore\",\n    \"boutique Lahore\",\n    \"local online shop Lahore\",\n    \"Amazon seller Lahore\",\n    \"Daraz seller Lahore\"\n  ],\n  \"locationQuery\": \"Lahore, Pakistan\",\n  \"maxCrawledPlacesPerSearch\": 150,\n  \"language\": \"en\",\n  \"scrapeReviews\": true,\n  \"maxReviews\": 5,\n  \"reviewsSort\": \"newest\",\n  \"skipClosedPlaces\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -304,
+        -112
+      ],
+      "id": "dc4a6e51-46d7-46ed-9621-c00c1f5823a5",
+      "name": "Apify",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        },
+        "httpBearerAuth": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -128,
+        -112
+      ],
+      "id": "15d35283-385e-49b8-a6c6-4d43b6cc7047",
+      "name": "Wait"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.apify.com/v2/acts/compass~crawler-google-places/runs/{{ $('Apify').item.json.data.id }}?token=YOUR_APIFY_API_TOKEN",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        32,
+        -112
+      ],
+      "id": "4ef22b8d-dfb2-40e5-87df-197aeec6bb54",
+      "name": "Check Run Status"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ff7e41ed-04cd-477e-b0f1-804386fc2a29",
+              "leftValue": "={{ $json.data.status }}",
+              "rightValue": "SUCCEEDED",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        176,
+        -112
+      ],
+      "id": "b8a3ec81-4da7-4e3f-92bc-4b96cdba5934",
+      "name": "If it is done"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.apify.com/v2/datasets/{{ $('Apify').item.json.data.defaultDatasetId }}/items?token=YOUR_APIFY_API_TOKEN&format=json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        352,
+        -112
+      ],
+      "id": "a5bbe1cb-f0e9-4350-b817-4f41a5a8dbe6",
+      "name": "Datasets Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\nfor (const item of $input.all()) {\n  const biz = item.json;\n  const rating = biz.totalScore;\n  const reviews = biz.reviews || [];\n  const hasNegativeReview = reviews.some(r => r.stars && r.stars <= 2);\n\n  if (rating && rating < 3.5 && hasNegativeReview) {\n    const negReview = reviews.find(r => r.stars <= 2);\n    results.push({\n      json: {\n        name: biz.title || '',\n        rating: rating,\n        total_reviews: biz.reviewsCount || 0,\n        address: biz.address || '',\n        website: biz.website || '',\n        phone: biz.phone || '',\n        category: biz.categoryName || '',\n        maps_url: biz.url || '',\n        review_snippet: negReview?.text || '',\n        review_count: reviews.length,\n        latitude: biz.location?.lat || '',\n        longitude: biz.location?.lng || '',\n        working_hours: JSON.stringify(biz.openingHours || {}),\n        place_id: biz.placeId || ''\n      }\n    });\n  }\n}\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        -112
+      ],
+      "id": "b3afed73-7dfb-4606-be70-62aeabac0d4a",
+      "name": "Filter by Rating & Negative Review"
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nconst unique = [];\nfor (const item of $input.all()) {\n  const id = item.json.place_id;\n  if (id && !seen.has(id)) {\n    seen.add(id);\n    unique.push(item);\n  }\n}\nreturn unique;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        -112
+      ],
+      "id": "ed31f129-50c1-4b32-a8e3-9343616b03ba",
+      "name": "Dedupe by place_id"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Ecommerce negaive reviews businesses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        864,
+        -112
+      ],
+      "id": "58537e6d-c887-426a-b937-3f1461cd520a",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Apify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apify": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Check Run Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Run Status": {
+      "main": [
+        [
+          {
+            "node": "If it is done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If it is done": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Datasets Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Datasets Items": {
+      "main": [
+        [
+          {
+            "node": "Filter by Rating & Negative Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter by Rating & Negative Review": {
+      "main": [
+        [
+          {
+            "node": "Dedupe by place_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedupe by place_id": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "id": "FD6WdxSgrGrwbpDq",
+  "tags": []
+}
