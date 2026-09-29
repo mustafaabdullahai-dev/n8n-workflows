@@ -5,17 +5,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ",
+          "value": "YOUR_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "content_calendar_500_topics_mixed",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 401916165,
           "mode": "list",
           "cachedResultName": "Content Calendar",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit#gid=401916165"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=401916165"
         },
         "options": {}
       },
@@ -29,8 +29,8 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "0D8cwybOFGM6f9RW",
-          "name": "Google Sheets account 5"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -93,8 +93,7 @@
       "position": [
         -96,
         176
-      ],
-      "webhookId": "f73d1e0e-6980-450a-b06a-376370f590d2"
+      ]
     },
     {
       "parameters": {
@@ -128,7 +127,7 @@
     },
     {
       "parameters": {
-        "person": "=kkeQ9hSCxp",
+        "person": "=YOUR_LINKEDIN_PERSON_URN",
         "text": "={{ $('Format Post 1').first().json.postText }}",
         "shareMediaCategory": "IMAGE",
         "additionalFields": {
@@ -145,8 +144,8 @@
       ],
       "credentials": {
         "linkedInOAuth2Api": {
-          "id": "gizrqWMis3a1hKXM",
-          "name": "LinkedIn account 3"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -155,17 +154,17 @@
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ",
+          "value": "YOUR_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "content_calendar_500_topics_mixed",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 401916165,
           "mode": "list",
           "cachedResultName": "Content Calendar",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit#gid=401916165"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=401916165"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -284,8 +283,8 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "0D8cwybOFGM6f9RW",
-          "name": "Google Sheets account 5"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -335,8 +334,7 @@
       "position": [
         -96,
         576
-      ],
-      "webhookId": "6376d7b4-a379-4738-9a37-ca6a8ed782f4"
+      ]
     },
     {
       "parameters": {
@@ -370,7 +368,7 @@
     },
     {
       "parameters": {
-        "person": "kkeQ9hSCxp",
+        "person": "YOUR_LINKEDIN_PERSON_URN",
         "text": "={{ $('Format Post 2').first().json.postText }}",
         "shareMediaCategory": "IMAGE",
         "additionalFields": {
@@ -387,8 +385,8 @@
       ],
       "credentials": {
         "linkedInOAuth2Api": {
-          "id": "gizrqWMis3a1hKXM",
-          "name": "LinkedIn account 3"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -397,17 +395,17 @@
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ",
+          "value": "YOUR_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "content_calendar_500_topics_mixed",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 401916165,
           "mode": "list",
           "cachedResultName": "Content Calendar",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit#gid=401916165"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=401916165"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -519,8 +517,8 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "0D8cwybOFGM6f9RW",
-          "name": "Google Sheets account 5"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -570,8 +568,7 @@
       "position": [
         -96,
         976
-      ],
-      "webhookId": "91d63aa8-5259-46ef-ae32-80bccdb70488"
+      ]
     },
     {
       "parameters": {
@@ -605,7 +602,7 @@
     },
     {
       "parameters": {
-        "person": "kkeQ9hSCxp",
+        "person": "YOUR_LINKEDIN_PERSON_URN",
         "text": "={{ $('Format Post 3').first().json.postText }}",
         "shareMediaCategory": "IMAGE",
         "additionalFields": {
@@ -622,8 +619,8 @@
       ],
       "credentials": {
         "linkedInOAuth2Api": {
-          "id": "gizrqWMis3a1hKXM",
-          "name": "LinkedIn account 3"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -632,17 +629,17 @@
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ",
+          "value": "YOUR_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "content_calendar_500_topics_mixed",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 401916165,
           "mode": "list",
           "cachedResultName": "Content Calendar",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17Cjw3FmyLoEUXl8SlvXnu-kMnMW8hjXJ7cOx74HX7NQ/edit#gid=401916165"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=401916165"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -754,8 +751,8 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "0D8cwybOFGM6f9RW",
-          "name": "Google Sheets account 5"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -794,7 +791,7 @@
     },
     {
       "parameters": {
-        "sendTo": "mustafaabdullah22002@gmail.com",
+        "sendTo": "your-email@example.com",
         "subject": "=⚠️ LinkedIn Content Automation: only {{ $json.count }} topic(s) available this week",
         "emailType": "text",
         "message": "=Heads up — this week only {{ $json.count }} unused topic(s) were available in your content calendar, so {{ $json.missingCount }} scheduled LinkedIn post(s) will be skipped.\n\nPlease add more topics (Status = \"Unused\") to the Google Sheet so all three weekly slots can be filled.",
@@ -808,11 +805,10 @@
         -96,
         1168
       ],
-      "webhookId": "e5a02834-d5ff-41dc-94fe-307a6c1864a2",
       "credentials": {
         "gmailOAuth2": {
-          "id": "aZsuKgHEwX6m2BLi",
-          "name": "Gmail account 2"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -868,8 +864,8 @@
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "p6avHgVqa1b3fLFf",
-          "name": "Google Gemini(PaLM) Api account 3"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -887,8 +883,8 @@
       "name": "Google Gemini Chat Model1",
       "credentials": {
         "googlePalmApi": {
-          "id": "zo9jUbD4BWqti8bx",
-          "name": "Google Gemini(PaLM) Api account 4"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -906,8 +902,8 @@
       "name": "Google Gemini Chat Model2",
       "credentials": {
         "googlePalmApi": {
-          "id": "zo9jUbD4BWqti8bx",
-          "name": "Google Gemini(PaLM) Api account 4"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -933,8 +929,8 @@
       "name": "Generate an image1",
       "credentials": {
         "alibabaCloudApi": {
-          "id": "EyUJ14OD0MlJd27h",
-          "name": "Qwen Cloud account 2"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -969,8 +965,8 @@
       "waitBetweenTries": 3000,
       "credentials": {
         "googlePalmApi": {
-          "id": "zo9jUbD4BWqti8bx",
-          "name": "Google Gemini(PaLM) Api account 4"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -1018,8 +1014,8 @@
       "waitBetweenTries": 3000,
       "credentials": {
         "googlePalmApi": {
-          "id": "zo9jUbD4BWqti8bx",
-          "name": "Google Gemini(PaLM) Api account 4"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -1054,8 +1050,8 @@
       "waitBetweenTries": 3000,
       "credentials": {
         "googlePalmApi": {
-          "id": "zo9jUbD4BWqti8bx",
-          "name": "Google Gemini(PaLM) Api account 4"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -1107,8 +1103,8 @@
       "name": "Generate an image",
       "credentials": {
         "alibabaCloudApi": {
-          "id": "EyUJ14OD0MlJd27h",
-          "name": "Qwen Cloud account 2"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     },
@@ -1134,8 +1130,8 @@
       "name": "Generate an image2",
       "credentials": {
         "alibabaCloudApi": {
-          "id": "EyUJ14OD0MlJd27h",
-          "name": "Qwen Cloud account 2"
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "REPLACE_WITH_CREDENTIAL_NAME"
         }
       }
     }
@@ -1505,10 +1501,8 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "8e13166f-c9b8-4311-8b44-5fff24b021b7",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "ab0f3876fd290a7d7a194edf648e2eaaa1229866106e1a25fd0ec2fc22a28b2e"
+    "templateCredsSetupCompleted": true
   },
   "nodeGroups": [],
   "id": "gnOs3m9VW87LdOV5",

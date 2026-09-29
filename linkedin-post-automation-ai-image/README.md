@@ -121,7 +121,7 @@ Expected columns:
 
 ## Alerts
 
-If fewer than 3 topics are available, `Notify Missing Topics` sends an email to `mustafaabdullah22002@gmail.com` stating how many posts will be skipped and asking for more topics.
+If fewer than 3 topics are available, `Notify Missing Topics` sends an email to the configured recipient address stating how many posts will be skipped and asking for more topics.
 
 ---
 
@@ -130,7 +130,7 @@ If fewer than 3 topics are available, `Notify Missing Topics` sends an email to 
 - `Mark Topic 2 Published` and `Mark Topic 3 Published` reference `row1` from `Prepare Topics` instead of `row2` / `row3`. They may update the wrong row.
 - Those same nodes set `Topic` to a literal `"="`, which can blank out the topic cell.
 - `Wait until Mon 10AM` uses a hardcoded date (`2026-08-04T01:26:00`), while the Wednesday/Friday waits compute their time dynamically from `$now`.
-- The LinkedIn publishing account is `kkeQ9hSCxp` (`person` field).
+- The LinkedIn publishing account is set via the `person` field in the Publish nodes.
 
 ## Setup
 
