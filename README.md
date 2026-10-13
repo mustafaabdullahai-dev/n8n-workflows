@@ -20,3 +20,7 @@ A collection of n8n automation workflows. Each workflow lives in its own folder 
 ## Notes
 
 Credentials and secrets have been redacted from the JSON files in this repository. Follow each workflow's README to supply your own credentials and configuration before running.
+
+---
+
+#GenAIwithAM
