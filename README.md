@@ -23,4 +23,4 @@ Credentials and secrets have been redacted from the JSON files in this repositor
 
 ---
 
-#GenAIwithAM
+**#GenAIwithAM** — GenAI, LLM and AI-agent projects by Abdullah Mustafa.
